@@ -1,0 +1,150 @@
+#################################################################################################
+#                                Stream Out layer mapping file                                  #
+#                                                                                               #
+#                                Layermap for advgpdk Xstream out                               #
+#                                                                                               #
+#                                (c) 2016 Cadence Design Systems, Inc.                          #
+#                                                                                               #    
+#################################################################################################
+
+#Layer Name     Layer Purpose  Layer Stream Number  Datatype Stream Number
+BuriedNWell	drawing			3		0
+NWell  		drawing  		5  		0  
+NWell	  	pin	   		5 		45
+NWell	  	label	   		5  		46
+Active  	drawing  		10  		0 
+Active  	fin     		10  		5 
+Active  	dummy   		10  		10 
+CutActive  	drawing  		10  		20 
+Active  	pin	   		10  		45
+Active  	label	   		10  		46
+ThickOx  	drawing  		11  		0 
+FinArea		fin48			300		0
+TrimFin		drawing			120		0
+Psvt      	drawing  		15  		0
+Plvt    	drawing  		15  		1
+Phvt    	drawing  		15  		2
+Nsvt      	drawing  		16  		0 
+Nlvt    	drawing  		16  		1 
+Nhvt    	drawing  		16  		2 
+Poly  		drawing  		20  		0 
+Poly  		dummy   		20  		10 
+Poly  		edge    		20  		30
+Poly	  	pin	   		20  		45
+Poly	  	label	   		20  		46
+CutPoly  	drawing  		21  		0 
+LiAct		drawing  		22  		0 
+LiPo  		drawing  		24  		0 
+PPitch 		poly86  		130  		1
+PPitch 		poly90  		130  		2
+PPitch 		poly94  		130  		3
+PPitch 		poly102  		130  		4
+PPitch 		poly104  		130  		5
+SaB 		drawing  		6  		0
+V0		drawing		  	25		0
+M1             	drawing           	30              0             
+M1             	fill			30              11            
+M1             	drawing         	30              1	mask1Color unlocked             
+M1             	drawing         	30              2	mask1Color locked             
+M1             	drawing         	30              3       mask2Color unlocked      
+M1             	drawing         	30              4       mask2Color locked      
+M1	  	pin	   		30  		45
+M1	  	label	   		30  		46
+CutM1    	drawing  		31  		0 
+CutM1Mask1	drawing  		31  		10
+CutM1Mask2	drawing  		31  		20
+V1  		drawing			32		0
+V1             	drawing         	32              1	mask1Color unlocked             
+V1             	drawing         	32              2	mask1Color locked             
+V1             	drawing         	32              3       mask2Color unlocked      
+V1             	drawing         	32              4       mask2Color locked      
+V1             	drawing         	32              5       mask3Color unlocked      
+V1             	drawing         	32              6       mask3Color locked      
+V1             	drawing         	32              7       mask4Color unlocked      
+V1             	drawing         	32              8       mask4Color locked      
+M2             	drawing           	34              0
+M2             	fill			34              11            
+M2             	drawing         	34              1	mask1Color unlocked             
+M2             	drawing         	34              2	mask1Color locked             
+M2             	drawing         	34              3       mask2Color unlocked      
+M2             	drawing         	34              4       mask2Color locked      
+M2	  	pin	   		34  		45
+M2	  	label	   		34  		46
+CutM2    	drawing  		35  		0 
+CutM2Mask1	drawing  		35  		10
+CutM2Mask2	drawing  		35  		20
+V2  		drawing			36		0
+V2             	drawing         	36              1	mask1Color unlocked             
+V2             	drawing         	36              2	mask1Color locked             
+V2             	drawing         	36              3       mask2Color unlocked      
+V2             	drawing         	36              4       mask2Color locked      
+V2             	drawing         	36              5       mask3Color unlocked      
+V2             	drawing         	36              6       mask3Color locked      
+V2             	drawing         	36              7       mask4Color unlocked      
+V2             	drawing         	36              8       mask4Color locked      
+M3            	drawing           	38              0
+M3             	fill			38              11            
+M3             	drawing         	38              1	mask1Color unlocked             
+M3             	drawing         	38              2	mask1Color locked             
+M3             	drawing         	38              3       mask2Color unlocked      
+M3             	drawing         	38              4       mask2Color locked      
+M3	  	pin	   		38  		45
+M3	  	label	   		38  		46
+CutM3    	drawing  		39  		0 
+CutM3Mask1	drawing  		39  		10
+CutM3Mask2	drawing  		39  		20
+V3  		drawing			40		0
+V3             	drawing         	40              1	mask1Color unlocked             
+V3             	drawing         	40              2	mask1Color locked             
+V3             	drawing         	40              3       mask2Color unlocked      
+V3             	drawing         	40              4       mask2Color locked      
+V3             	drawing         	40              5       mask3Color unlocked      
+V3             	drawing         	40              6       mask3Color locked      
+V3             	drawing         	40              7       mask4Color unlocked      
+V3             	drawing         	40              8       mask4Color locked      
+M4            	drawing           	42              0
+M4             	fill			42              11            
+M4	  	pin	   		42  		45
+M4	  	label	   		42  		46
+V4  		drawing			44		0
+M5            	drawing           	46              0
+M5             	fill			46              11            
+M5	  	pin	   		46  		45
+M5	  	label	   		46  		46
+V5  		drawing			48		0
+M6            	drawing           	50              0
+M6             	fill			50              11            
+M6	  	pin	   		50  		45
+M6	  	label	   		50  		46
+V6  		drawing			52		0
+M7            	drawing           	54              0
+M7             	fill			54              11            
+M7	  	pin	   		54  		45
+M7	  	label	   		54  		46
+CMT            	drawing           	60              0
+VT 		drawing			62		0
+VT 		fill			62		11
+MT            	drawing           	64              0
+MT             	fill			64              11            
+MT	  	pin	   		64  		45
+MT	  	label	   		64  		46
+m1res          	drawing           	30              12
+m2res          	drawing           	34              12
+m3res          	drawing           	38              12
+m4res          	drawing           	42              12
+m5res          	drawing           	46              12
+m6res          	drawing           	50              12
+m7res          	drawing           	54              12
+mtres          	drawing           	64              12
+nwstires       	drawing           	 5              12
+nwodres        	drawing           	 5              13
+diffres        	drawing           	10              12
+pcres          	drawing           	20              12
+diodmy         	drawing                153              0
+NPNdummy       	drawing                154              0
+mimW           	drawing                155              0
+mimL           	drawing                156              0
+text           	drawing                 63              0
+instance       	drawing                163              0
+# Reserved 1000 0 for PRBoundary (in object map file)       
+

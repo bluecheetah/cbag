@@ -1,0 +1,201 @@
+lib_name: test_netlist
+cell_name: pmos4_standard
+view_name: schematic
+bbox:
+  - -201
+  - -100
+  - 30
+  - 106
+terminals:
+  B:
+    obj:
+      - 1
+      - inst:
+          lib_name: basic
+          cell_name: iopin
+          view_name: symbolr
+          xform:
+            - 20
+            - 0
+            - MX
+          bbox:
+            - -41
+            - -10
+            - 30
+            - 26
+          connections:
+            {}
+          params:
+            {}
+          is_primitive: false
+        attr:
+          layer: 229
+          purpose: 237
+          net: ""
+          origin:
+            - -5
+            - 0
+          alignment: 7
+          orient: MX
+          font: 5
+          height: 10
+          overbar: false
+          visible: true
+          drafting: true
+          attr_type: 0
+          format: 1
+    stype: 0
+    ttype: 2
+  D:
+    obj:
+      - 1
+      - inst:
+          lib_name: basic
+          cell_name: iopin
+          view_name: symbolr
+          xform:
+            - -80
+            - -90
+            - MX
+          bbox:
+            - -141
+            - -100
+            - -70
+            - -64
+          connections:
+            {}
+          params:
+            {}
+          is_primitive: false
+        attr:
+          layer: 229
+          purpose: 237
+          net: ""
+          origin:
+            - -105
+            - -90
+          alignment: 7
+          orient: MX
+          font: 5
+          height: 10
+          overbar: false
+          visible: true
+          drafting: true
+          attr_type: 0
+          format: 1
+    stype: 0
+    ttype: 2
+  G:
+    obj:
+      - 1
+      - inst:
+          lib_name: basic
+          cell_name: iopin
+          view_name: symbolr
+          xform:
+            - -140
+            - 0
+            - MX
+          bbox:
+            - -201
+            - -10
+            - -130
+            - 26
+          connections:
+            {}
+          params:
+            {}
+          is_primitive: false
+        attr:
+          layer: 229
+          purpose: 237
+          net: ""
+          origin:
+            - -165
+            - 0
+          alignment: 7
+          orient: MX
+          font: 5
+          height: 10
+          overbar: false
+          visible: true
+          drafting: true
+          attr_type: 0
+          format: 1
+    stype: 0
+    ttype: 2
+  S:
+    obj:
+      - 1
+      - inst:
+          lib_name: basic
+          cell_name: iopin
+          view_name: symbolr
+          xform:
+            - -80
+            - 80
+            - MX
+          bbox:
+            - -141
+            - 70
+            - -70
+            - 106
+          connections:
+            {}
+          params:
+            {}
+          is_primitive: false
+        attr:
+          layer: 229
+          purpose: 237
+          net: ""
+          origin:
+            - -105
+            - 80
+          alignment: 7
+          orient: MX
+          font: 5
+          height: 10
+          overbar: false
+          visible: true
+          drafting: true
+          attr_type: 0
+          format: 1
+    stype: 0
+    ttype: 2
+shapes:
+  []
+instances:
+  {}
+props:
+  connectivityLastUpdated:
+    - 0
+    - 3224
+  lastSchematicExtraction:
+    - 4
+    - time_val: 1542517340
+  net#:
+    - 0
+    - 0
+  pin#:
+    - 0
+    - 4
+  schGeometryLastUpdated:
+    - 0
+    - 3224
+  schGeometryVersion:
+    - 3
+    - sch.ds.gm.1.4
+  schXtrVersion:
+    - 3
+    - sch.10.0
+app_defs:
+  _dbLastSavedCounter:
+    - 0
+    - 3224
+  _dbvCvTimeStamp:
+    - 0
+    - 3224
+  cdbRevision:
+    - 0
+    - 227612

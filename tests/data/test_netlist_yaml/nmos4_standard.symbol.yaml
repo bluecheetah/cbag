@@ -1,0 +1,405 @@
+lib_name: test_netlist
+cell_name: nmos4_standard
+view_name: symbol
+bbox:
+  - -68
+  - -34
+  - 132
+  - 44
+terminals:
+  B:
+    obj:
+      - 0
+      - layer: 229
+        purpose: 4294967295
+        net: ""
+        bbox:
+          - 36
+          - -4
+          - 44
+          - 4
+    stype: 0
+    ttype: 2
+  D:
+    obj:
+      - 0
+      - layer: 229
+        purpose: 4294967295
+        net: ""
+        bbox:
+          - 36
+          - 26
+          - 44
+          - 34
+    stype: 0
+    ttype: 2
+  G:
+    obj:
+      - 0
+      - layer: 229
+        purpose: 4294967295
+        net: ""
+        bbox:
+          - -4
+          - -4
+          - 4
+          - 4
+    stype: 0
+    ttype: 2
+  S:
+    obj:
+      - 0
+      - layer: 229
+        purpose: 4294967295
+        net: ""
+        bbox:
+          - 36
+          - -34
+          - 44
+          - -26
+    stype: 0
+    ttype: 2
+shapes:
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 15
+          - 15
+        -
+          - 15
+          - -15
+  -
+    - 7
+    - layer: 229
+      purpose: 237
+      net: ""
+      origin:
+        - 6
+        - 10
+      alignment: 1
+      orient: R0
+      font: 5
+      height: 10
+      overbar: false
+      visible: false
+      drafting: true
+      text: G
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 20
+          - -15
+        -
+          - 20
+          - 15
+  -
+    - 7
+    - layer: 229
+      purpose: 237
+      net: ""
+      origin:
+        - -6
+        - 0
+      alignment: 7
+      orient: R0
+      font: 5
+      height: 10
+      overbar: false
+      visible: false
+      drafting: true
+      text: B
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 20
+          - -15
+        -
+          - 40
+          - -15
+        -
+          - 40
+          - -30
+  -
+    - 7
+    - layer: 229
+      purpose: 237
+      net: ""
+      origin:
+        - 40
+        - -16
+      alignment: 1
+      orient: R270
+      font: 5
+      height: 10
+      overbar: false
+      visible: false
+      drafting: true
+      text: D
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 0
+          - 0
+        -
+          - 15
+          - 0
+  -
+    - 7
+    - layer: 229
+      purpose: 237
+      net: ""
+      origin:
+        - 40
+        - 16
+      alignment: 7
+      orient: R270
+      font: 5
+      height: 10
+      overbar: false
+      visible: false
+      drafting: true
+      text: S
+  -
+    - 0
+    - layer: 236
+      purpose: 4294967295
+      net: ""
+      bbox:
+        - 0
+        - -30
+        - 40
+        - 30
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 20
+          - 0
+        -
+          - 40
+          - 0
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 20
+          - 15
+        -
+          - 40
+          - 15
+        -
+          - 40
+          - 30
+  -
+    - 5
+    - layer: 231
+      purpose: 4294967295
+      net: ""
+      points:
+        -
+          - 30
+          - -10
+        -
+          - 40
+          - -15
+        -
+          - 30
+          - -20
+  -
+    - 8
+    - layer: 237
+      purpose: 248
+      net: ""
+      origin:
+        - 35
+        - 20
+      alignment: 8
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 4294967295
+      net: ""
+      origin:
+        - 50
+        - -14
+      alignment: 2
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 248
+      net: ""
+      origin:
+        - 49
+        - -4
+      alignment: 2
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 4294967295
+      net: ""
+      origin:
+        - 50
+        - 9
+      alignment: 2
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 4294967295
+      net: ""
+      origin:
+        - 50
+        - 22
+      alignment: 2
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 247
+      net: ""
+      origin:
+        - 50
+        - 35
+      alignment: 2
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 248
+      net: ""
+      origin:
+        - 35
+        - -29
+      alignment: 8
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 237
+      purpose: 248
+      net: ""
+      origin:
+        - 15
+        - 6
+      alignment: 8
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsSkillEvalText
+  -
+    - 8
+    - layer: 231
+      purpose: 240
+      net: ""
+      origin:
+        - 32
+        - 32
+      alignment: 8
+      orient: R0
+      font: 5
+      height: 8
+      overbar: false
+      visible: true
+      drafting: true
+      evaluator: cdsNLPEvalText
+instances:
+  {}
+props:
+  instNamePrefix:
+    - 3
+    - X
+  interfaceLastChanged:
+    - 4
+    - time_val: 1464321038
+  partName:
+    - 3
+    - nmos4_standard
+  pin#:
+    - 0
+    - 8
+  portOrder:
+    - 5
+    - name: ILList
+      bin_val: ("B" "D" "G" "S")
+  vendorName:
+    - 3
+    - ""
+app_defs:
+  _dbLastSavedCounter:
+    - 0
+    - 262
+  _dbvCvTimeStamp:
+    - 0
+    - 262
+  cdbRevision:
+    - 0
+    - 227612

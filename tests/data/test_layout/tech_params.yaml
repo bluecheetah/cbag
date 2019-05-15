@@ -1,0 +1,676 @@
+# PDK library name.
+tech_lib: 'cds_ff_mpt'
+# layout unit, in meters.
+layout_unit: 1.0e-6
+# layout resolution, in layout units.
+resolution: 0.0005
+# True if BAG needs to handle coloring metals.
+use_track_coloring: True
+# default purpose name
+default_purpose: drawing
+# pin purpose name
+pin_purpose: pin
+# True to create pin objects
+make_pin_obj: True
+
+well_layers:
+  nch: []
+  pch:
+    - !!python/tuple ['NWell', 'drawing']
+  ntap:
+    - !!python/tuple ['NWell', 'drawing']
+  ptap: []
+
+imp_layers:
+  nch: []
+  pch: []
+  ptap: []
+  ntap: []
+
+thres_layers:
+  nch:
+    standard:
+      !!python/tuple ['Nsvt', 'drawing']: [10, 50]
+    fast:
+      !!python/tuple ['Nlvt', 'drawing']: [10, 50]
+    low_power:
+      !!python/tuple ['Nhvt', 'drawing']: [10, 50]
+    svt:
+      !!python/tuple ['Nsvt', 'drawing']: [10, 50]
+    lvt:
+      !!python/tuple ['Nlvt', 'drawing']: [10, 50]
+    hvt:
+      !!python/tuple ['Nhvt', 'drawing']: [10, 50]
+  pch:
+    standard:
+      !!python/tuple ['Psvt', 'drawing']: [10, 50]
+    fast:
+      !!python/tuple ['Plvt', 'drawing']: [10, 50]
+    low_power:
+      !!python/tuple ['Phvt', 'drawing']: [10, 50]
+    svt:
+      !!python/tuple ['Psvt', 'drawing']: [10, 50]
+    lvt:
+      !!python/tuple ['Plvt', 'drawing']: [10, 50]
+    hvt:
+      !!python/tuple ['Phvt', 'drawing']: [10, 50]
+  ptap:
+    standard:
+      !!python/tuple ['Psvt', 'drawing']: [10, 50]
+    fast:
+      !!python/tuple ['Plvt', 'drawing']: [10, 50]
+    low_power:
+      !!python/tuple ['Phvt', 'drawing']: [10, 50]
+    svt:
+      !!python/tuple ['Psvt', 'drawing']: [10, 50]
+    lvt:
+      !!python/tuple ['Plvt', 'drawing']: [10, 50]
+    hvt:
+      !!python/tuple ['Phvt', 'drawing']: [10, 50]
+  ntap:
+    standard:
+      !!python/tuple ['Nsvt', 'drawing']: [10, 50]
+    fast:
+      !!python/tuple ['Nlvt', 'drawing']: [10, 50]
+    low_power:
+      !!python/tuple ['Nhvt', 'drawing']: [10, 50]
+    svt:
+      !!python/tuple ['Nsvt', 'drawing']: [10, 50]
+    lvt:
+      !!python/tuple ['Nlvt', 'drawing']: [10, 50]
+    hvt:
+      !!python/tuple ['Nhvt', 'drawing']: [10, 50]
+
+# mapping from metal layer ID to layer/purpose pair that defines
+# a metal resistor.
+res_metal_layer_table:
+  1: [!!python/tuple ['m1res', 'drawing']]
+  2: [!!python/tuple ['m2res', 'drawing']]
+  3: [!!python/tuple ['m3res', 'drawing']]
+  4: [!!python/tuple ['m4res', 'drawing']]
+  5: [!!python/tuple ['m5res', 'drawing']]
+  6: [!!python/tuple ['m6res', 'drawing']]
+  7: [!!python/tuple ['m7res', 'drawing']]
+  8: [!!python/tuple ['mtres', 'drawing']]
+
+# mapping from metal layer ID to layer/purpose pair that
+# defines metal exclusion region.
+metal_exclude_table: {}
+
+# mapping from metal layer ID to metal layer name.  Assume purpose is 'drawing'.
+lay_purp_list:
+  1: [!!python/tuple ['M1CA', 'drawing'], !!python/tuple ['M1CB', 'drawing']]
+  2: [!!python/tuple ['M2CA', 'drawing'], !!python/tuple ['M2CB', 'drawing']]
+  3: [!!python/tuple ['M3CA', 'drawing'], !!python/tuple ['M3CB', 'drawing']]
+  4: [!!python/tuple ['M4', 'drawing']]
+  5: [!!python/tuple ['M5', 'drawing']]
+  6: [!!python/tuple ['M6', 'drawing']]
+  7: [!!python/tuple ['M7', 'drawing']]
+  8: [!!python/tuple ['MT', 'drawing']]
+
+width_intervals:
+  1:
+    - [[64, 65], [80, 81], [120, .inf]]
+    - [[64, 65], [80, 81], [120, .inf]]
+  2:
+    - [[64, 65], [80, 81], [120, .inf]]
+    - [[64, 65], [80, 81], [120, .inf]]
+  3:
+    - [[64, 65], [80, 81], [120, .inf]]
+    - [[64, 65], [80, 81], [120, .inf]]
+  4:
+    - [[64, 65], [80, 81], [120, .inf]]
+    - [[64, 65], [80, 81], [120, .inf]]
+  5:
+    - [[80, 81], [120, .inf]]
+    - [[80, 81], [120, .inf]]
+  6:
+    - [[80, 81], [120, .inf]]
+    - [[80, 81], [120, .inf]]
+  7:
+    - [[200, .inf]]
+    - [[200, .inf]]
+  8:
+    - [[200, .inf]]
+    - [[200, .inf]]
+
+# mapping from tuple of via layers to via ID.
+via_id:
+  [!!python/tuple ['LiPo', 'drawing'], !!python/tuple ['M1CA', 'drawing']]: M1_LiPo
+  [!!python/tuple ['LiPo', 'drawing'], !!python/tuple ['M1CB', 'drawing']]: M1_LiPo
+  [!!python/tuple ['LiAct', 'drawing'], !!python/tuple ['M1CA', 'drawing']]: M1_LiAct
+  [!!python/tuple ['LiAct', 'drawing'], !!python/tuple ['M1CB', 'drawing']]: M1_LiAct
+  [!!python/tuple ['M1CA', 'drawing'], !!python/tuple ['M2CA', 'drawing']]: M2_M1
+  [!!python/tuple ['M1CA', 'drawing'], !!python/tuple ['M2CB', 'drawing']]: M2_M1
+  [!!python/tuple ['M1CB', 'drawing'], !!python/tuple ['M2CA', 'drawing']]: M2_M1
+  [!!python/tuple ['M1CB', 'drawing'], !!python/tuple ['M2CB', 'drawing']]: M2_M1
+  [!!python/tuple ['M2CA', 'drawing'], !!python/tuple ['M3CA', 'drawing']]: M3_M2
+  [!!python/tuple ['M2CA', 'drawing'], !!python/tuple ['M3CB', 'drawing']]: M3_M2
+  [!!python/tuple ['M2CB', 'drawing'], !!python/tuple ['M3CA', 'drawing']]: M3_M2
+  [!!python/tuple ['M2CB', 'drawing'], !!python/tuple ['M3CB', 'drawing']]: M3_M2
+  [!!python/tuple ['M3CA', 'drawing'], !!python/tuple ['M4', 'drawing']]: M4_M3
+  [!!python/tuple ['M3CB', 'drawing'], !!python/tuple ['M4', 'drawing']]: M4_M3
+  [!!python/tuple ['M4', 'drawing'], !!python/tuple ['M5', 'drawing']]: M5_M4
+  [!!python/tuple ['M5', 'drawing'], !!python/tuple ['M6', 'drawing']]: M6_M5
+  [!!python/tuple ['M6', 'drawing'], !!python/tuple ['M7', 'drawing']]: M7_M6
+  [!!python/tuple ['M7', 'drawing'], !!python/tuple ['MT', 'drawing']]: MT_M7
+
+# table of eletromigration temperature scale factor
+idc_em_scale:
+  # scale factor for resistor
+  # scale[idx] is used if temperature is less than or equal to temp[idx]
+  res:
+    temp: [100, .inf]
+    scale: [1.0, 0.5]
+  # scale factor for this metal layer type
+  ['M1CA', 'drawing']: &x_em_scale
+    temp: [100, .inf]
+    scale: [1.0, 0.5]
+  ['M1CB', 'drawing']: *x_em_scale
+  ['M2CA', 'drawing']: *x_em_scale
+  ['M2CB', 'drawing']: *x_em_scale
+  ['M3CA', 'drawing']: *x_em_scale
+  ['M3CB', 'drawing']: *x_em_scale
+  ['M4', 'drawing']: *x_em_scale
+  ['M5', 'drawing']: *x_em_scale
+  ['M6', 'drawing']: *x_em_scale
+  ['M7', 'drawing']: *x_em_scale
+  ['MT', 'drawing']: *x_em_scale
+  # default scale vector
+  default:
+    temp: [100, .inf]
+    scale: [1.0, 0.5]
+
+# via enclosure/spacing rules
+via:
+  M2_M1: &via_1x
+    - name: square
+      dim: [64, 64]
+      sp: [84, 84]
+      sp2: [[84, 84]]
+      sp3: [[84, 84]]
+      bot_enc: &square_1x_enc
+        - [70, [[80, 0], [0, 80]]]
+        - [102, [[4, 78], [78, 4]]]
+        - [134, [[56, 20], [20, 56]]]
+        - [.inf, [[36, 36]]]
+      top_enc: *square_1x_enc
+    - &hrect_1x
+      name: hrect
+      dim: [128, 64]
+      sp: [84, 84]
+      sp2: [[84, 84]]
+      sp3: [[84, 84]]
+      bot_enc: &hrect_1x_enc
+        - [98, [[40, 0]]]
+        - [102, [[24, 18]]]
+        - [210, [[20, 20]]]
+        - [.inf, [[20, 0]]]
+      top_enc: *hrect_1x_enc
+    - &vrect_1x
+      name: vrect
+      dim: [64, 128]
+      sp: [84, 84]
+      sp2: [[84, 84]]
+      sp3: [[84, 84]]
+      bot_enc: &vrect_1x_enc
+        - [98, [[0, 40]]]
+        - [102, [[18, 24]]]
+        - [210, [[20, 20]]]
+        - [.inf, [[0, 20]]]
+      top_enc: *vrect_1x_enc
+  M3_M2: *via_1x
+  M4_M3: *via_1x
+  M5_M4: &via_2x
+    - name: square
+      dim: [84, 84]
+      sp: [124, 124]
+      sp2: [[124, 124]]
+      sp3: [[156, 156]]
+      bot_enc: &square_2x_enc
+        - [.inf, [[16, 16]]]
+      top_enc: *square_2x_enc
+    - *hrect_1x
+    - *vrect_1x
+  M6_M5: *via_2x
+  M7_M6:
+    - name: square
+      dim: [128, 128]
+      sp: [168, 168]
+      sp2: [[168, 168]]
+      sp3: [[168, 168]]
+      bot_enc:
+        - [.inf, [[30, 30]]]
+      top_enc:
+        - [.inf, [[30, 30]]]
+  MT_M7:
+    - name: square
+      dim: [200, 200]
+      sp: [240, 240]
+      sp2: [[240, 240]]
+      sp3: [[240, 240]]
+      bot_enc:
+        - [.inf, [[60, 60]]]
+      top_enc:
+        - [.inf, [[120, 120]]]
+
+# minimum wire spacing rule.  Space is measured orthogonal to wire direction.
+sp_min: &sp_min_data
+  [M1CA, drawing]: &sp_min_1x
+    - [.inf, 64]
+  [M1CB, drawing]: *sp_min_1x
+  [M2CA, drawing]: *sp_min_1x
+  [M2CB, drawing]: *sp_min_1x
+  [M3CA, drawing]: *sp_min_1x
+  [M3CB, drawing]: *sp_min_1x
+  [M4, drawing]:
+    - [198, 96]
+    - [1498, 144]
+    - [2998, 224]
+    - [.inf, 440]
+  [M5, drawing]: &sp_min_2x
+    - [118, 136]
+    - [178, 160]
+    - [.inf, 200]
+  [M6, drawing]: *sp_min_2x
+  [M7, drawing]: *sp_min_2x
+  [MT, drawing]: *sp_min_2x
+
+# minimum wire spacing rule for same color wires.
+sp_sc_min: *sp_min_data
+
+# minimum line-end spacing rule.  Space is measured parallel to wire direction.
+sp_le_min:
+  [M1CA, drawing]: &sp_le_min_1x
+    - [.inf, 128]
+  [M1CB, drawing]: *sp_le_min_1x
+  [M2CA, drawing]: *sp_le_min_1x
+  [M2CB, drawing]: *sp_le_min_1x
+  [M3CA, drawing]: *sp_le_min_1x
+  [M3CB, drawing]: *sp_le_min_1x
+  [M4, drawing]:
+    - [.inf, 128]
+  [M5, drawing]: &sp_le_min_2x
+    - [.inf, 148]
+  [M6, drawing]: *sp_le_min_2x
+  [M7, drawing]: *sp_le_min_2x
+  [MT, drawing]: *sp_le_min_2x
+
+# minimum length/minimum area rules.
+len_min:
+  [M1CA, drawing]: &len_min_1x
+    w_al_list:
+      - [.inf, 24704, 20]
+    md_al_list:
+      - [.inf, 24704, 20]
+  [M1CB, drawing]: *len_min_1x
+  [M2CA, drawing]: *len_min_1x
+  [M2CB, drawing]: *len_min_1x
+  [M3CA, drawing]: *len_min_1x
+  [M3CB, drawing]: *len_min_1x
+  [M4, drawing]: *len_min_1x
+  [M5, drawing]: *len_min_1x
+  [M6, drawing]: *len_min_1x
+  [M7, drawing]: *len_min_1x
+  [MT, drawing]: *len_min_1x
+
+mos_lay_table:
+  OD: !!python/tuple ['Active', 'drawing']
+  OD_DUMMY: !!python/tuple ['Active', 'dummy']
+  PO: !!python/tuple ['Poly', 'drawing']
+  PO_PODE: !!python/tuple ['Poly', 'edge']
+  PO_DUMMY: !!python/tuple ['Poly', 'dummy']
+  FB: !!python/tuple ['FinArea', 'fin48']
+  MD: !!python/tuple ['LiAct', 'drawing']
+  MP: !!python/tuple ['LiPo', 'drawing']
+  CPO: !!python/tuple ['CutPoly', 'drawing']
+
+# transistor DRC rules.
+mos:
+  # OD quantization pitch.
+  mos_pitch: 96
+  # MOSBase vertical connection layer
+  dig_conn_layer: 1
+  # True if transistors must end with substrate row
+  end_with_sub_row: True
+  # source/drain pitch related constants.
+  # source/drain pitch is computed as val[0] + val[1] * lch_unit
+  sd_pitch_constants:
+    lch: [.inf]
+    val: [[180, 0]]
+  # drain connection info
+  d_wire_info:
+    bot_layer: 1
+    # wire_w, is_horiz, v_w, v_h, v_sp, v_bot_enc, v_top_enc
+    info_list:
+      - [64, False, 64, 64, 64, 36, 80]
+  # drain connection info
+  g_wire_info:
+    bot_layer: 1
+    # wire_w, is_horiz, v_w, v_h, v_sp, v_bot_enc, v_top_enc
+    info_list:
+      - [64, False, 64, 64, 64, 36, 80]
+
+  edge_margin: 180
+  end_margin: 192
+
+  # fin height
+  fin_h: 28
+  # Optional: OD vertical extension over fins.
+  # calculated as val[0] + val[1] * fin_h + val[2] * fin_p
+  # defaults to (0, 0, 0)
+  od_fin_exty_constants: !!python/tuple [0, 0, 0]
+
+  sub_w_default: 4
+
+  # minimum horizontal space between OD, in resolution units
+  od_spx: 100
+  # minimum vertical space between OD, in resolution units
+  od_spy: 20
+  # maximum vertical space between OD, in resolution units
+  od_spy_max: 1200
+
+  # horizontal enclosure of implant layers over OD
+  imp_od_encx: 130
+  # implant layers vertical enclosure of active.
+  # this is used to figure out where to separate implant layers in extension blocks,
+  imp_od_ency: 90
+  # minimum implant layer width
+  imp_min_w: 104
+
+  # MP height
+  mp_h: 80
+  # MP and PO overlap
+  mp_po_extx: 32
+  # vertical space between MP
+  mp_spy: 68
+  # space bewteen MP and MD
+  mp_md_spy: 26
+  # space between MP and CPO
+  mp_cpo_spy: 38
+
+  # normal CPO height
+  cpo_h:
+    lch: [.inf]
+    val: [120]
+  # horizontal extension of CPO beyond PO
+  cpo_po_extx:
+    lch: [.inf]
+    val: [68]
+  # vertical enclosure of CPO on PO
+  cpo_po_ency:
+    lch: [.inf]
+    val: [68]
+  # CPO to OD spacing
+  cpo_od_spy:
+    lch: [.inf]
+    val: [40]
+  # CPO to CPO vertical spacing
+  cpo_spy:
+    lch: [.inf]
+    val: [180]
+  # CPO height for substrate end
+  cpo_h_end:
+    lch: [.inf]
+    val: [120]
+  # MD width
+  md_w:
+    lch: [.inf]
+    val: [80]
+  # vertical extension of MD over OD
+  md_od_exty:
+    lch: [.inf]
+    val: [40]
+  # vertical space bewteen MD
+  md_spy:
+    lch: [.inf]
+    val: [92]
+  # minimum height of MD
+  md_h_min:
+    lch: [.inf]
+    val: [136]
+
+  # PO extension over OD
+  po_od_exty:
+    lch: [.inf]
+    val: [20]
+  # OD horizontal extension over PO.
+  # value specified as a (offset, lch_scale, sd_pitch_scale) tuple, where the extension is
+  # computed as offset + lch_scale * lch_unit + sd_pitch_scale * sd_pitch_unit
+  po_od_extx_constants:
+    lch: [.inf]
+    val: [[0, 0, 1]]
+
+layer:
+  BuriedNWell: 3
+  NWell: 5
+  Active: 10
+  CutActive: 11
+  FinArea: 12
+  CellBoundary: 13
+  Psvt: 15
+  Nsvt: 16
+  TrimFin: 18
+  Poly: 20
+  CutPoly: 21
+  PPitch: 22
+  LiPo: 25
+  LiAct: 40
+  V0: 50
+  M1: 60
+  CutM1: 64
+  CutM1Mask1: 65
+  CutM1Mask2: 66
+  V1: 70
+  M2: 80
+  CutM2: 85
+  CutM2Mask1: 86
+  CutM2Mask2: 87
+  V2: 90
+  M3: 100
+  CutM3: 102
+  CutM3Mask1: 103
+  CutM3Mask2: 104
+  V3: 105
+  M4: 110
+  V4: 115
+  M5: 120
+  V5: 125
+  M6: 130
+  V6: 135
+  M7: 140
+  VT: 145
+  MT: 150
+  localInt: 6000
+  badV0LI: 6001
+  badV0M1: 6002
+  badV1M1: 7001
+  badV1M2: 7002
+  badV2M2: 7011
+  badV2M3: 7012
+  badV3M3: 7021
+  badV3M4: 7022
+  badV4M4: 7031
+  badV4M5: 7032
+  badV5M5: 7041
+  badV5M6: 7042
+  badV6M6: 7051
+  badV6M7: 7052
+  badVTM7: 7061
+  badVTMT: 7062
+  bulkActive: 10002
+  cutSubstrate: 10003
+  Gate: 10011
+  PolyNotCut: 10012
+  PolyNotRes: 10013
+  AllCutActive: 10020
+  ActiveNotCut: 10021
+  ActiveNotGate: 10022
+  trueActive: 10023
+  activeInterConn: 10024
+  HvActive: 10027
+  NwellStiRes: 10028
+  NwellOdRes: 10029
+  NtypeImp: 11001
+  NImplant: 11002
+  PtypeImp: 11005
+  PImplant: 11006
+  badImplant: 11010
+  Implant: 11015
+  badActive: 11102
+  badPoly: 11103
+  PActive: 11115
+  NActive: 11116
+  NWNotRes1: 11202
+  NWNotRes2: 11204
+  ActiveNotRes1: 11206
+  ActiveNotRes2: 11208
+  preFin: 12001
+  Fin: 12003
+  finGate: 12004
+  M1Mask1: 13000
+  M1Mask2: 13002
+  M1NotCut: 13004
+  M1NotCutMask1: 13006
+  M1NotCutMask2: 13008
+  M1NotRes: 13009
+  M2Mask1: 13010
+  M2Mask2: 13012
+  M2NotCut: 13014
+  M2NotCutMask1: 13016
+  M2NotCutMask2: 13018
+  M2NotRes: 13019
+  M3Mask1: 13020
+  M3Mask2: 13022
+  M3NotCut: 13024
+  M3NotCutMask1: 13026
+  M3NotCutMask2: 13028
+  M3NotRes: 13029
+  M4NotRes: 13030
+  M5NotRes: 13032
+  M6NotRes: 13034
+  M7NotRes: 13036
+  MTNotRes: 13038
+  CB: 20000
+  FB48: 20001
+  CMT: 99900
+  m1res: 99901
+  m2res: 99902
+  m3res: 99903
+  m4res: 99904
+  m5res: 99905
+  m6res: 99906
+  m7res: 99907
+  mtres: 99908
+  nwstires: 99912
+  nwodres: 99913
+  diffres: 99914
+  pcres: 99915
+  diodmy: 99916
+  ThickOx: 99918
+  Nlvt: 99920
+  Nhvt: 99921
+  Plvt: 99930
+  Phvt: 99931
+  SaB: 99932
+  NPNdummy: 99933
+  mimW: 99934
+  mimL: 99935
+  M1CA: 13000
+  M1CB: 13002
+  M2CA: 13010
+  M2CB: 13012
+  M3CA: 13020
+  M3CB: 13022
+purpose:
+  dummy: 1000
+  fin: 12000
+  SADPEnds: 20000
+  fin48: 30000
+  global: 30030
+  poly86: 30100
+  poly90: 30110
+  poly94: 30120
+  poly102: 30130
+  poly104: 30140
+  localWSP: 40000
+  edge: 99900
+  oaCustomFill: 4294967284
+  oaFillOPC: 4294967285
+  redundant: 4294967288
+  gapFill: 4294967289
+  annotation: 4294967290
+  OPCAntiSerif: 4294967291
+  OPCSerif: 4294967292
+  slot: 4294967293
+  fill: 4294967294
+  drawing: 4294967295
+  label: 237
+  drawing1: 241
+  drawing2: 242
+  drawing3: 243
+  drawing4: 244
+  drawing5: 245
+  drawing6: 246
+  drawing7: 247
+  drawing8: 248
+  drawing9: 249
+  boundary: 250
+  pin: 251
+via_layers:
+  Li_PActive:
+    - [10, 4294967295]
+    - [40, 4294967295]
+    - [40, 4294967295]
+  LiPo_Poly:
+    - [20, 4294967295]
+    - [25, 4294967295]
+    - [25, 4294967295]
+  M1_LiPo:
+    - [25, 4294967295]
+    - [50, 4294967295]
+    - [60, 4294967295]
+  M1_LiAct:
+    - [40, 4294967295]
+    - [50, 4294967295]
+    - [60, 4294967295]
+  M2_M1:
+    - [60, 4294967295]
+    - [70, 4294967295]
+    - [80, 4294967295]
+  M3_M2:
+    - [80, 4294967295]
+    - [90, 4294967295]
+    - [100, 4294967295]
+  M4_M3:
+    - [100, 4294967295]
+    - [105, 4294967295]
+    - [110, 4294967295]
+  M5_M4:
+    - [110, 4294967295]
+    - [115, 4294967295]
+    - [120, 4294967295]
+  M6_M5:
+    - [120, 4294967295]
+    - [125, 4294967295]
+    - [130, 4294967295]
+  M7_M6:
+    - [130, 4294967295]
+    - [135, 4294967295]
+    - [140, 4294967295]
+  MT_M7:
+    - [140, 4294967295]
+    - [145, 4294967295]
+    - [150, 4294967295]
+  MT_CMT:
+    - [99900, 4294967295]
+    - [145, 4294967295]
+    - [150, 4294967295]
+
+colors:
+  13000: [60, 129]
+  13002: [60, 130]
+  13010: [80, 129]
+  13012: [80, 130]
+  13020: [100, 129]
+  13022: [100, 130]
