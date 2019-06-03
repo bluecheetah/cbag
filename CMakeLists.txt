@@ -41,9 +41,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-# Version 3.9 required because of C++17 / LTO support.
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.13)
 project(cbag)
 
 # Boost Spirit X3 requires C++14
