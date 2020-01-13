@@ -1,0 +1,12 @@
+# empty suffix
+- - "foo/"
+  - ""
+  - "PATH"
+# empty prefix
+- - ""
+  - "/bar"
+  - "HOME"
+# non-existent environment variable
+- - "abcd"
+  - "efgh"
+  - "FOOBARBAZ_BOO"

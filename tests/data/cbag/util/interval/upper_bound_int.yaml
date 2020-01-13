@@ -1,0 +1,42 @@
+# upper bound of non-existing element
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 13
+  - [20, 21]
+# upper bound of existing non-last element
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 10
+  - [20, 21]
+# upper bound of element at end
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 11
+  - [20, 21]
+# upper bound of last element begin
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 30
+  - [0, -1]
+# upper bound of last element middle
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 40
+  - [0, -1]
+# upper bound of last element end
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 1000
+  - [0, -1]
+# upper bound of last element outside
+- - - [10, 11]
+    - [20, 21]
+    - [30, 1000]
+  - 2000
+  - [0, -1]

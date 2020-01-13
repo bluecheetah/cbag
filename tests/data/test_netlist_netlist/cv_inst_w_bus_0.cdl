@@ -1,0 +1,35 @@
+*.BIPOLAR
+*.RESI = 2000
+*.SCALE METER
+*.MEGA
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+.PARAM
+
+
+.SUBCKT nmos4_standard B D G S
+*.PININFO B:B D:B G:B S:B
+.ENDS
+
+
+.SUBCKT pmos4_standard B D G S
+*.PININFO B:B D:B G:B S:B
+.ENDS
+
+
+.SUBCKT cv_bus_term VDD VSS in<1> in<0> out
+*.PININFO VDD:I VSS:I in<1>:I in<0>:I out:O
+X3 VSS out in<1> VSS / nmos4_standard
+X4 VDD out in<1> VDD / pmos4_standard l=90n nf=2 w=400n
+XN VSS out in<0> VSS / nmos4_standard
+XP VDD out in<0> VDD / pmos4_standard l=90n nf=2 w=400n
+.ENDS
+
+
+.SUBCKT TEST VDD VSS in<1> in<0> out
+*.PININFO VDD:I VSS:I in<1>:I in<0>:I out:O
+XINST VDD VSS in<1> in<0> out / cv_bus_term
+.ENDS

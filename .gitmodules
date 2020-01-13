@@ -1,0 +1,3 @@
+[submodule "cbag_polygon"]
+	path = cbag_polygon
+	url = git@login1.bcanalog.com:bag/cbag_polygon_release.git

@@ -1,0 +1,9 @@
+# stream out SP for Active/Fin LPP onto GDSII 1000:1
+#Pattern Snap Active fin 1000 1
+# stream out SP for Poly, regardless of purpose, on GDSII 1000:2
+#Pattern Snap Poly any 1000 2
+
+# prBoundary checks require mapping the OA object to a stream
+# layer / datatype
+Boundary PR 1000 0
+
