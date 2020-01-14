@@ -97,44 +97,49 @@ void write_gds_stop(spdlog::logger &logger, std::ostream &stream);
 void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std::string &cell_name,
                         const cbag::layout::cellview &cv,
                         const std::unordered_map<std::string, std::string> &rename_map,
-                        const std::vector<tval_t> &time_vec, const gds_lookup &lookup);
+                        const std::vector<tval_t> &time_vec, const gds_lookup &lookup, int scale);
 
 template <class Vector>
 void implement_gds_stream(std::ostream &stream, const std::string &lib_name,
                           const std::string &layer_map, const std::string &obj_map,
-                          double resolution, double user_unit, const Vector &cv_list) {
-    auto logger = get_cbag_logger();
-    auto time_vec = get_gds_time();
-
-    // get gds file stream
-    write_gds_start(*logger, stream, lib_name, resolution, user_unit, time_vec);
-
-    // get first element and setup gds_lookup
+                          const Vector &cv_list) {
     auto cursor = cv_list.begin();
     auto stop = cv_list.end();
     if (cursor != stop) {
+        auto logger = get_cbag_logger();
+        auto time_vec = get_gds_time();
+        auto &tech = *cursor->second->get_tech();
+
+        // get gds file stream
+        auto user_unit = tech.get_layout_unit();
+        auto res = tech.get_resolution();
+        auto gds_res = tech.get_gds_resolution();
+        auto scale = static_cast<int>(std::round(res / gds_res));
+        write_gds_start(*logger, stream, lib_name, gds_res, user_unit, time_vec);
+
+        // get first element and setup gds_lookup
         std::unordered_map<std::string, std::string> rename_map{};
-        gds_lookup lookup{*cursor->second->get_tech(), layer_map, obj_map};
+        gds_lookup lookup{tech, layer_map, obj_map};
         for (; cursor != stop; ++cursor) {
             auto & [ cv_cell_name, cv_ptr ] = *cursor;
             const auto &cell_name = cv_ptr->get_name();
             logger->info("Creating layout cell {}", cv_cell_name);
-            write_lay_cellview(*logger, stream, cv_cell_name, *cv_ptr, rename_map, time_vec,
-                               lookup);
+            write_lay_cellview(*logger, stream, cv_cell_name, *cv_ptr, rename_map, time_vec, lookup,
+                               scale);
             logger->info("cell name {} maps to {}", cell_name, cv_cell_name);
             rename_map[cell_name] = cv_cell_name;
         }
-    }
 
-    write_gds_stop(*logger, stream);
+        write_gds_stop(*logger, stream);
+    }
 }
 
 template <class Vector>
 void implement_gds(const std::string &fname, const std::string &lib_name,
-                   const std::string &layer_map, const std::string &obj_map, double resolution,
-                   double user_unit, const Vector &cv_list) {
+                   const std::string &layer_map, const std::string &obj_map,
+                   const Vector &cv_list) {
     auto stream = util::open_file_write(fname, true);
-    implement_gds_stream(stream, lib_name, layer_map, obj_map, resolution, user_unit, cv_list);
+    implement_gds_stream(stream, lib_name, layer_map, obj_map, cv_list);
     stream.close();
 }
 

@@ -66,13 +66,15 @@ class rect_writer {
     std::ostream &stream;
     glay_t layer;
     gpurp_t purpose;
+    int scale;
 
   public:
-    rect_writer(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose)
-        : logger(logger), stream(stream), layer(layer), purpose(purpose) {}
+    rect_writer(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
+                int scale)
+        : logger(logger), stream(stream), layer(layer), purpose(purpose), scale(scale) {}
 
     rect_writer &operator=(const box_t &box) {
-        write_box(logger, stream, layer, purpose, box);
+        write_box(logger, stream, layer, purpose, box, scale);
         return *this;
     }
 
@@ -142,15 +144,15 @@ void write_gds_start(spdlog::logger &logger, std::ostream &stream, const std::st
 void write_gds_stop(spdlog::logger &logger, std::ostream &stream) { write_lib_end(logger, stream); }
 
 void write_lay_geometry(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpurp_t purp,
-                        const layout::poly_set_t &geo) {
-    auto lambda = [&logger, &stream, &lay, &purp](const auto &v) {
-        write_polygon(logger, stream, lay, purp, v);
+                        const layout::poly_set_t &geo, int scale) {
+    auto lambda = [&logger, &stream, lay, purp, scale](const auto &v) {
+        write_polygon(logger, stream, lay, purp, v, scale);
     };
     polygon::apply_polygons<coord_t, decltype(lambda), layout::poly_t>(geo, std::move(lambda));
 }
 
 void write_lay_via(spdlog::logger &logger, std::ostream &stream, const layout::tech &tech,
-                   const gds_lookup &lookup, const layout::via &v) {
+                   const gds_lookup &lookup, const layout::via &v, int scale) {
     auto[lay1_key, cut_key, lay2_key] = tech.get_via_layer_purpose(v.get_via_id());
     auto gkey1 = lookup.get_gds_layer(lay1_key);
     if (!gkey1) {
@@ -173,13 +175,13 @@ void write_lay_via(spdlog::logger &logger, std::ostream &stream, const layout::t
     auto[glay1, gpurp1] = *gkey1;
     auto[gcl, gcp] = *gkeyc;
     auto[glay2, gpurp2] = *gkey2;
-    write_box(logger, stream, glay1, gpurp1, layout::get_bot_box(v));
-    write_box(logger, stream, glay2, gpurp2, layout::get_top_box(v));
-    get_via_cuts(v, rect_writer(logger, stream, gcl, gcp));
+    write_box(logger, stream, glay1, gpurp1, layout::get_bot_box(v), scale);
+    write_box(logger, stream, glay2, gpurp2, layout::get_top_box(v), scale);
+    get_via_cuts(v, rect_writer(logger, stream, gcl, gcp, scale));
 }
 
 void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpurp_t purp,
-                   const layout::pin &pin, bool make_pin_obj, double resolution) {
+                   const layout::pin &pin, bool make_pin_obj, double resolution, int scale) {
     auto box = pin.bbox();
     if (!is_physical(box)) {
         logger.warn("non-physical bbox {} on pin layer ({}, {}), skipping.", to_string(box), lay,
@@ -198,23 +200,23 @@ void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpu
         xform = transformation(xc, yc, orientation::R0);
     }
 
-    write_text(logger, stream, lay, purp, pin.label(), xform, text_h, resolution);
+    write_text(logger, stream, lay, purp, pin.label(), xform, text_h, resolution, scale);
     if (make_pin_obj) {
-        write_box(logger, stream, lay, purp, box);
+        write_box(logger, stream, lay, purp, box, scale);
     }
 }
 
 void write_lay_label(spdlog::logger &logger, std::ostream &stream, const layout::label &lab,
-                     double resolution) {
+                     double resolution, int scale) {
     auto[lay, purp] = lab.get_key();
     write_text(logger, stream, lay, purp, lab.get_text(), lab.get_xform(), lab.get_height(),
-               resolution);
+               resolution, scale);
 }
 
 void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std::string &cell_name,
                         const cbag::layout::cellview &cv,
                         const std::unordered_map<std::string, std::string> &rename_map,
-                        const std::vector<tval_t> &time_vec, const gds_lookup &lookup) {
+                        const std::vector<tval_t> &time_vec, const gds_lookup &lookup, int scale) {
     write_struct_begin(logger, stream, time_vec);
     write_struct_name(logger, stream, cell_name);
 
@@ -222,7 +224,7 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
     for (auto iter = cv.begin_inst(); iter != cv.end_inst(); ++iter) {
         auto & [ inst_name, inst ] = *iter;
         write_instance(logger, stream, inst.get_cell_name(&rename_map), inst_name, inst.xform,
-                       inst.nx, inst.ny, inst.spx, inst.spy);
+                       scale, inst.nx, inst.ny, inst.spx, inst.spy);
     }
 
     logger.info("Export layout geometries.");
@@ -234,7 +236,7 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
                         layer_key.first, layer_key.second);
         } else {
             auto[glay, gpurp] = *gkey;
-            write_lay_geometry(logger, stream, glay, gpurp, geo);
+            write_lay_geometry(logger, stream, glay, gpurp, geo, scale);
         }
     }
 
@@ -242,7 +244,7 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
     auto tech_ptr = cv.get_tech();
     auto resolution = tech_ptr->get_resolution();
     for (auto iter = cv.begin_via(); iter != cv.end_via(); ++iter) {
-        write_lay_via(logger, stream, *tech_ptr, lookup, *iter);
+        write_lay_via(logger, stream, *tech_ptr, lookup, *iter, scale);
     }
 
     logger.info("Export layout pins.");
@@ -257,14 +259,14 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
         } else {
             auto[glay, gpurp] = *gkey;
             for (const auto &pin : pin_list) {
-                write_lay_pin(logger, stream, glay, gpurp, pin, make_pin_obj, resolution);
+                write_lay_pin(logger, stream, glay, gpurp, pin, make_pin_obj, resolution, scale);
             }
         }
     }
 
     logger.info("Export layout labels.");
     for (auto iter = cv.begin_label(); iter != cv.end_label(); ++iter) {
-        write_lay_label(logger, stream, *iter, resolution);
+        write_lay_label(logger, stream, *iter, resolution, scale);
     }
 
     logger.info("Export layout boundaries.");
@@ -278,9 +280,9 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
             auto[glay, gpurp] = *gkey;
             if (btype == boundary_type::PR) {
                 // write OA boundary property string
-                write_polygon(logger, stream, glay, gpurp, *iter, &pr_prop_str);
+                write_polygon(logger, stream, glay, gpurp, *iter, scale, &pr_prop_str);
             } else {
-                write_polygon(logger, stream, glay, gpurp, *iter);
+                write_polygon(logger, stream, glay, gpurp, *iter, scale);
             }
         }
     }
@@ -297,7 +299,7 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
                     static_cast<enum_t>(btype), lay_id);
             } else {
                 auto[glay, gpurp] = *gkey;
-                write_polygon(logger, stream, glay, gpurp, blockage);
+                write_polygon(logger, stream, glay, gpurp, blockage, scale);
             }
         }
     }

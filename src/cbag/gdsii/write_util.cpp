@@ -88,21 +88,22 @@ class uchar_iter {
 template <typename iT> class point_xy_iter {
   private:
     iT pt_iter;
+    int scale = 1;
     bool is_y = false;
 
   public:
     point_xy_iter() = default;
-    explicit point_xy_iter(iT pt_iter, bool is_y = false)
-        : pt_iter(std::move(pt_iter)), is_y(is_y) {}
+    explicit point_xy_iter(iT pt_iter, int scale, bool is_y = false)
+        : pt_iter(std::move(pt_iter)), scale(scale), is_y(is_y) {}
 
     uint32_t operator*() const {
-        auto val = (is_y) ? (*pt_iter)[1] : (*pt_iter)[0];
+        auto val = (is_y) ? (*pt_iter)[1] * scale : (*pt_iter)[0] * scale;
         return *reinterpret_cast<uint32_t *>(&val);
     }
 
-    uint32_t x() const { return (*pt_iter)[0]; }
+    uint32_t x() const { return (*pt_iter)[0] * scale; }
 
-    uint32_t y() const { return (*pt_iter)[1]; }
+    uint32_t y() const { return (*pt_iter)[1] * scale; }
 
     point_xy_iter &operator++() {
         if (is_y) {
@@ -112,7 +113,7 @@ template <typename iT> class point_xy_iter {
         return *this;
     }
     bool operator!=(const point_xy_iter &other) const noexcept {
-        return pt_iter != other.pt_iter || is_y != other.is_y;
+        return pt_iter != other.pt_iter || is_y != other.is_y || scale != other.scale;
     }
 };
 
@@ -165,11 +166,12 @@ void write_int(spdlog::logger &logger, std::ostream &stream, uint16_t val) {
 
 template <typename iT>
 void write_points(spdlog::logger &logger, std::ostream &stream, std::size_t num_pts, iT begin,
-                  iT end) {
-    auto start_iter = point_xy_iter(begin);
+                  iT end, int scale) {
+    auto start_iter = point_xy_iter(begin, scale);
     auto xval = start_iter.x();
     auto yval = start_iter.y();
-    write<record_type::XY>(stream, 2 * (num_pts + 1), std::move(start_iter), point_xy_iter(end));
+    write<record_type::XY>(stream, 2 * (num_pts + 1), std::move(start_iter),
+                           point_xy_iter(end, scale));
     // write first point
     write_bytes(stream, xval);
     write_bytes(stream, yval);
@@ -200,7 +202,7 @@ std::tuple<uint32_t, uint16_t> get_angle_flag(orientation orient) {
 }
 
 void write_transform(spdlog::logger &logger, std::ostream &stream, const transformation &xform,
-                     double mag, cnt_t nx, cnt_t ny, offset_t spx, offset_t spy) {
+                     int scale, double mag, cnt_t nx, cnt_t ny, offset_t spx, offset_t spy) {
     auto[angle, bit_flag] = get_angle_flag(xform.orient());
 
     write_int<record_type::STRANS>(logger, stream, bit_flag);
@@ -221,14 +223,15 @@ void write_transform(spdlog::logger &logger, std::ostream &stream, const transfo
         auto[x1, y1] = xform.offset();
         auto[x2, y2] = xform.transform(gds_spx * gds_nx, 0);
         auto[x3, y3] = xform.transform(0, gds_spy * gds_ny);
-        auto xy = std::array<uint32_t, 6>{interpret_as<uint32_t>(x1), interpret_as<uint32_t>(y1),
-                                          interpret_as<uint32_t>(x2), interpret_as<uint32_t>(y2),
-                                          interpret_as<uint32_t>(x3), interpret_as<uint32_t>(y3)};
+        auto xy = std::array<uint32_t, 6>{
+            interpret_as<uint32_t>(x1 * scale), interpret_as<uint32_t>(y1 * scale),
+            interpret_as<uint32_t>(x2 * scale), interpret_as<uint32_t>(y2 * scale),
+            interpret_as<uint32_t>(x3 * scale), interpret_as<uint32_t>(y3 * scale)};
 
         write<record_type::XY>(stream, xy.size(), xy.begin(), xy.end());
     } else {
-        auto xy = std::array<uint32_t, 2>{interpret_as<uint32_t>(x(xform)),
-                                          interpret_as<uint32_t>(y(xform))};
+        auto xy = std::array<uint32_t, 2>{interpret_as<uint32_t>(x(xform) * scale),
+                                          interpret_as<uint32_t>(y(xform) * scale)};
         write<record_type::XY>(stream, xy.size(), xy.begin(), xy.end());
     }
 }
@@ -279,11 +282,11 @@ void write_prop_inst_name(spdlog::logger &logger, std::ostream &stream, const st
 }
 
 void write_polygon(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-                   const layout::poly_t &poly, const std::string *prop_ptr) {
+                   const layout::poly_t &poly, int scale, const std::string *prop_ptr) {
     write_empty<record_type::BOUNDARY>(logger, stream);
     write_int<record_type::LAYER>(logger, stream, layer);
     write_int<record_type::DATATYPE>(logger, stream, purpose);
-    write_points(logger, stream, poly.size(), poly.begin(), poly.end());
+    write_points(logger, stream, poly.size(), poly.begin(), poly.end(), scale);
     if (prop_ptr) {
         write_int<record_type::PROPATTR>(logger, stream, PROP_USER_STR);
         write_name<record_type::PROPVALUE>(logger, stream, *prop_ptr);
@@ -292,39 +295,39 @@ void write_polygon(spdlog::logger &logger, std::ostream &stream, glay_t layer, g
 }
 
 void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-               const box_t &b) {
+               const box_t &box, int scale) {
     write_empty<record_type::BOUNDARY>(logger, stream);
     write_int<record_type::LAYER>(logger, stream, layer);
     write_int<record_type::DATATYPE>(logger, stream, purpose);
 
-    auto x0 = interpret_as<uint32_t>(xl(b));
-    auto x1 = interpret_as<uint32_t>(xh(b));
-    auto y0 = interpret_as<uint32_t>(yl(b));
-    auto y1 = interpret_as<uint32_t>(yh(b));
+    auto x0 = interpret_as<uint32_t>(xl(box) * scale);
+    auto x1 = interpret_as<uint32_t>(xh(box) * scale);
+    auto y0 = interpret_as<uint32_t>(yl(box) * scale);
+    auto y1 = interpret_as<uint32_t>(yh(box) * scale);
     std::array<uint32_t, 10> xy{x0, y0, x1, y0, x1, y1, x0, y1, x0, y0};
     write<record_type::XY>(stream, xy.size(), xy.begin(), xy.end());
     write_element_end(logger, stream);
 }
 
 void write_arr_instance(spdlog::logger &logger, std::ostream &stream, const std::string &cell_name,
-                        const std::string &inst_name, const transformation &xform, cnt_t nx,
-                        cnt_t ny, offset_t spx, offset_t spy) {
+                        const std::string &inst_name, const transformation &xform, int scale,
+                        cnt_t nx, cnt_t ny, offset_t spx, offset_t spy) {
     write_empty<record_type::AREF>(logger, stream);
     write_name<record_type::SNAME>(logger, stream, cell_name);
-    write_transform(logger, stream, xform, 1.0, nx, ny, spx, spy);
+    write_transform(logger, stream, xform, scale, 1.0, nx, ny, spx, spy);
     write_prop_inst_name(logger, stream, inst_name);
     write_element_end(logger, stream);
 }
 
 void write_instance(spdlog::logger &logger, std::ostream &stream, const std::string &cell_name,
-                    const std::string &inst_name, const transformation &xform, cnt_t nx, cnt_t ny,
-                    offset_t spx, offset_t spy) {
+                    const std::string &inst_name, const transformation &xform, int scale, cnt_t nx,
+                    cnt_t ny, offset_t spx, offset_t spy) {
     if (nx > 1 || ny > 1) {
-        write_arr_instance(logger, stream, cell_name, inst_name, xform, nx, ny, spx, spy);
+        write_arr_instance(logger, stream, cell_name, inst_name, xform, scale, nx, ny, spx, spy);
     } else {
         write_empty<record_type::SREF>(logger, stream);
         write_name<record_type::SNAME>(logger, stream, cell_name);
-        write_transform(logger, stream, xform);
+        write_transform(logger, stream, xform, scale);
         write_prop_inst_name(logger, stream, inst_name);
         write_element_end(logger, stream);
     }
@@ -332,12 +335,12 @@ void write_instance(spdlog::logger &logger, std::ostream &stream, const std::str
 
 void write_text(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
                 const std::string &text, const transformation &xform, offset_t height,
-                double resolution) {
+                double resolution, int scale) {
     write_empty<record_type::TEXT>(logger, stream);
     write_int<record_type::LAYER>(logger, stream, layer);
     write_int<record_type::TEXTTYPE>(logger, stream, purpose);
     write_int<record_type::PRESENTATION>(logger, stream, TEXT_PRESENTATION);
-    write_transform(logger, stream, xform, height * resolution);
+    write_transform(logger, stream, xform, scale, height * resolution);
     write_name<record_type::STRING>(logger, stream, text);
     write_element_end(logger, stream);
 }

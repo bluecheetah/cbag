@@ -84,6 +84,7 @@ class tech {
     std::string tech_lib = "";
     double_t layout_unit = 1e-6;
     double_t resolution = 0.001;
+    double_t gds_resolution = 0.001;
     bool use_track_coloring = false;
     bool make_pin_obj = true;
     space_type sp_sc_type = space_type::DIFF_COLOR;
@@ -103,12 +104,12 @@ class tech {
   public:
     tech();
 
-    tech(std::string &&tech_lib, double_t layout_unit, double_t resolution, bool use_track_coloring,
-         bool make_pin_obj, space_type sp_sc_type, space_type sp_meta_type, level_t grid_bot_layer,
-         lp_lookup &&lp_map, via_lookup &&vlookup, sp_map_grp_t &&sp_map_grp, len_map_t &&len_map,
-         lp_list_t &&lp_list, lp_list_t &&dum_lp_list, wintv_list_t &&wintv_list,
-         level_map_t &&lev_map, color_map_t &&color_map, std::vector<layer_t> &&exc_lp_list,
-         bool exc_blockage);
+    tech(std::string &&tech_lib, double_t layout_unit, double_t resolution, double_t gds_resolution,
+         bool use_track_coloring, bool make_pin_obj, space_type sp_sc_type, space_type sp_meta_type,
+         level_t grid_bot_layer, lp_lookup &&lp_map, via_lookup &&vlookup,
+         sp_map_grp_t &&sp_map_grp, len_map_t &&len_map, lp_list_t &&lp_list,
+         lp_list_t &&dum_lp_list, wintv_list_t &&wintv_list, level_map_t &&lev_map,
+         color_map_t &&color_map, std::vector<layer_t> &&exc_lp_list, bool exc_blockage);
 
     virtual ~tech() = default;
     tech(tech &&) = default;
@@ -122,6 +123,8 @@ class tech {
     double_t get_layout_unit() const noexcept;
 
     double_t get_resolution() const noexcept;
+
+    double_t get_gds_resolution() const noexcept;
 
     bool get_use_track_coloring() const noexcept;
 

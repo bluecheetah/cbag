@@ -215,6 +215,12 @@ tech make_tech(const std::string &fname) {
     auto use_track_coloring = node["use_track_coloring"].as<bool>();
     auto make_pin_obj = node["make_pin_obj"].as<bool>();
 
+    auto gds_resolution = resolution;
+    auto gds_res_node = node["gds_resolution"];
+    if (gds_res_node.IsDefined()) {
+        gds_resolution = gds_res_node.as<double_t>();
+    }
+
     auto lp_map = yaml::make_lp_lookup(node);
     auto vlookup = yaml::make_via_lookup(node, lp_map);
 
@@ -308,6 +314,7 @@ tech make_tech(const std::string &fname) {
     return {std::move(tech_lib),
             layout_unit,
             resolution,
+            gds_resolution,
             use_track_coloring,
             make_pin_obj,
             sp_sc_type,

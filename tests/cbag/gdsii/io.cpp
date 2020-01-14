@@ -83,7 +83,7 @@ TEST_CASE("Read/write transformation objects", "[gds]") {
     auto logger = cbag::get_cbag_logger();
     auto stream = std::stringstream();
 
-    cbag::gdsii::write_transform(*logger, stream, xform);
+    cbag::gdsii::write_transform(*logger, stream, xform, 1);
     auto ans = cbag::gdsii::read_transform(*logger, stream);
 
     CAPTURE(ans, xform);
@@ -122,9 +122,7 @@ TEST_CASE("Read/write arrayed instances", "[gds]") {
     cv_list.emplace_back(master_name, master);
     cv_list.emplace_back(expect_name, expect);
 
-    cbag::gdsii::implement_gds_stream(sstream, lib_name, lay_map, obj_map,
-                                      tech_info->get_resolution(), tech_info->get_layout_unit(),
-                                      cv_list);
+    cbag::gdsii::implement_gds_stream(sstream, lib_name, lay_map, obj_map, cv_list);
     sstream.flush();
 
     auto cv_read_list = std::vector<std::shared_ptr<const c_cellview>>();

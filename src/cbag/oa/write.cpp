@@ -862,9 +862,9 @@ void write_lay_cellview(const oa::oaNativeNS &ns_native, const oa::oaCdbaNS &ns,
     auto cv_tech_ptr = cv.get_tech();
     auto &color_map = cv_tech_ptr->get_color_map();
 
-    int dbu_per_uu = tech->getDBUPerUU(oa::oaViewType::get(oa::oacMaskLayout));
-    float dsn_res = cv_tech_ptr->get_resolution();
-    int scale = dsn_res * dbu_per_uu;
+    auto dbu_per_uu = tech->getDBUPerUU(oa::oaViewType::get(oa::oacMaskLayout));
+    auto dsn_res = cv_tech_ptr->get_resolution();
+    auto scale = static_cast<int>(std::round(dsn_res * dbu_per_uu));
 
     // create top block
     auto blk = oa::oaBlock::create(dsn);

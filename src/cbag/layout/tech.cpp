@@ -60,26 +60,28 @@ namespace layout {
 tech::tech() = default;
 
 tech::tech(std::string &&tech_lib, double_t layout_unit, double_t resolution,
-           bool use_track_coloring, bool make_pin_obj, space_type sp_sc_type,
-           space_type sp_meta_type, level_t grid_bot_layer, lp_lookup &&lp_map,
-           via_lookup &&vlookup, sp_map_grp_t &&sp_map_grp, len_map_t &&len_map,
+           double_t gds_resolution, bool use_track_coloring, bool make_pin_obj,
+           space_type sp_sc_type, space_type sp_meta_type, level_t grid_bot_layer,
+           lp_lookup &&lp_map, via_lookup &&vlookup, sp_map_grp_t &&sp_map_grp, len_map_t &&len_map,
            lp_list_t &&lp_list, lp_list_t &&dum_lp_list, wintv_list_t &&wintv_list,
            level_map_t &&lev_map, color_map_t &&color_map, std::vector<layer_t> &&exc_lp_list,
            bool exc_blockage)
     : tech_lib(std::move(tech_lib)), layout_unit(layout_unit), resolution(resolution),
-      use_track_coloring(use_track_coloring), make_pin_obj(make_pin_obj), sp_sc_type(sp_sc_type),
-      sp_meta_type_(sp_meta_type), grid_bot_layer(grid_bot_layer), lp_map(std::move(lp_map)),
-      vlookup(std::move(vlookup)), sp_map_grp(std::move(sp_map_grp)), len_map(std::move(len_map)),
-      lp_list(std::move(lp_list)), dum_lp_list_(std::move(dum_lp_list)),
-      wintv_list(std::move(wintv_list)), lev_map(std::move(lev_map)),
-      color_map(std::move(color_map)), exc_lp_list_(std::move(exc_lp_list)),
-      exc_blockage_(exc_blockage) {}
+      gds_resolution(gds_resolution), use_track_coloring(use_track_coloring),
+      make_pin_obj(make_pin_obj), sp_sc_type(sp_sc_type), sp_meta_type_(sp_meta_type),
+      grid_bot_layer(grid_bot_layer), lp_map(std::move(lp_map)), vlookup(std::move(vlookup)),
+      sp_map_grp(std::move(sp_map_grp)), len_map(std::move(len_map)), lp_list(std::move(lp_list)),
+      dum_lp_list_(std::move(dum_lp_list)), wintv_list(std::move(wintv_list)),
+      lev_map(std::move(lev_map)), color_map(std::move(color_map)),
+      exc_lp_list_(std::move(exc_lp_list)), exc_blockage_(exc_blockage) {}
 
 const std::string &tech::get_tech_lib() const noexcept { return tech_lib; }
 
 double_t tech::get_layout_unit() const noexcept { return layout_unit; }
 
 double_t tech::get_resolution() const noexcept { return resolution; }
+
+double_t tech::get_gds_resolution() const noexcept { return gds_resolution; }
 
 bool tech::get_use_track_coloring() const noexcept { return use_track_coloring; }
 

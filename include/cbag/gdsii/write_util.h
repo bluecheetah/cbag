@@ -87,22 +87,22 @@ void write_struct_name(spdlog::logger &logger, std::ostream &stream, const std::
 void write_struct_end(spdlog::logger &logger, std::ostream &stream);
 
 void write_transform(spdlog::logger &logger, std::ostream &stream, const transformation &xform,
-                     double mag = 1.0, cnt_t nx = 1, cnt_t ny = 1, offset_t spx = 0,
+                     int scale, double mag = 1.0, cnt_t nx = 1, cnt_t ny = 1, offset_t spx = 0,
                      offset_t spy = 0);
 
 void write_polygon(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-                   const layout::poly_t &poly, const std::string *prop_ptr = nullptr);
+                   const layout::poly_t &poly, int scale, const std::string *prop_ptr = nullptr);
 
 void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-               const box_t &box);
+               const box_t &box, int scale);
 
 void write_instance(spdlog::logger &logger, std::ostream &stream, const std::string &cell_name,
-                    const std::string &inst_name, const transformation &xform, cnt_t nx = 1,
-                    cnt_t ny = 1, offset_t spx = 0, offset_t spy = 0);
+                    const std::string &inst_name, const transformation &xform, int scale,
+                    cnt_t nx = 1, cnt_t ny = 1, offset_t spx = 0, offset_t spy = 0);
 
 void write_text(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
                 const std::string &text, const transformation &xform, offset_t height,
-                double resolution);
+                double resolution, int scale);
 
 } // namespace gdsii
 } // namespace cbag
