@@ -14,6 +14,23 @@ terms and conditions of both licenses.  See [here](LICENSE.BSD-3-Clause) for ful
 BSD license, and [here](LICENSE.Apache-2.0) for full text of the Apache license.  See individual
 files to check if they fall under Apache-2.0, or both Apache-2.0 and BSD-3-Clause.
 
+## Dependencies
+
+* spdlog
+  `git clone git@github.com:gabime/spdlog.git`
+
+*  fmt
+  `git clone git@github.com:fmtlib/fmt.git`
+
+* yaml-cpp
+  `git clone git@github.com:jbeder/yaml-cpp.git`
+
+* catch2
+  `git clone git@github.com:catchorg/Catch2.git`
+
+*  libboost-serialization
+  (on Debian/Ubuntu) `sudo apt install libboost-serialization-dev`
+
 ## Restrictions
 
 ### Machine Architecture
