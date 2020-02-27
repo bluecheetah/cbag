@@ -18,18 +18,14 @@ files to check if they fall under Apache-2.0, or both Apache-2.0 and BSD-3-Claus
 
 * spdlog
   `git clone git@github.com:gabime/spdlog.git`
-
 *  fmt
   `git clone git@github.com:fmtlib/fmt.git`
-
 * yaml-cpp
   `git clone git@github.com:jbeder/yaml-cpp.git`
-
 * catch2
   `git clone git@github.com:catchorg/Catch2.git`
-
 *  libboost-serialization
-  (on Debian/Ubuntu) `sudo apt install libboost-serialization-dev`
+  `sudo apt install libboost-serialization-dev` (on Debian/Ubuntu)
 
 ## Restrictions
 
