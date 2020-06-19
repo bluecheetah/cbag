@@ -223,3 +223,39 @@ TEST_CASE("upper_bound_int", "[disjoint_intvs]") {
         REQUIRE(*iter == expect);
     }
 }
+
+TEST_CASE("get_next", "[disjoint_intvs]") {
+    using data_type = std::tuple<std::vector<intv_type>, coord_t, bool, coord_t>;
+    auto fname = "tests/data/cbag/util/interval/get_next.yaml";
+
+    auto[intvs, val, even, expect] = GENERATE_COPY(read_test_vector<data_type>(fname));
+
+    CAPTURE(intvs, val, even, expect);
+
+    auto data = cu::disjoint_intvs<intv_type>(std::move(intvs));
+    if (expect < 0) {
+        // should raise an error
+        REQUIRE_THROWS(data.get_next(val, even));
+    } else {
+        auto ans = data.get_next(val, even);
+        REQUIRE(ans == expect);
+    }
+}
+
+TEST_CASE("get_prev", "[disjoint_intvs]") {
+    using data_type = std::tuple<std::vector<intv_type>, coord_t, bool, coord_t>;
+    auto fname = "tests/data/cbag/util/interval/get_prev.yaml";
+
+    auto[intvs, val, even, expect] = GENERATE_COPY(read_test_vector<data_type>(fname));
+
+    CAPTURE(intvs, val, even, expect);
+
+    auto data = cu::disjoint_intvs<intv_type>(std::move(intvs));
+    if (expect < 0) {
+        // should raise an error
+        REQUIRE_THROWS(data.get_prev(val, even));
+    } else {
+        auto ans = data.get_prev(val, even);
+        REQUIRE(ans == expect);
+    }
+}

@@ -62,8 +62,8 @@ cbag::sch::cellview cell_to_yaml(const oa::oaNativeNS &ns_native, const oa::oaCd
         read_sch_cellview(ns_native, ns, logger, lib_name, cell_name, sch_view, primitive_libs);
 
     // write schematic to file
-    auto yaml_dir = cbag::util::get_canonical_path(yaml_path) / cell_name / "schematic";
-    auto yaml_fpath = yaml_dir / "cellview.yaml";
+    auto yaml_dir = cbag::util::get_canonical_path(yaml_path);
+    auto yaml_fpath = yaml_dir / (cell_name + ".yaml");
     cbag::util::make_parent_dirs(yaml_fpath);
     sch_cv.to_file(yaml_fpath.string());
 
@@ -80,7 +80,7 @@ cbag::sch::cellview cell_to_yaml(const oa::oaNativeNS &ns_native, const oa::oaCd
         oa::oaView *view_ptr = cv_ptr->getView();
         if (view_ptr->getViewType() == oa::oaViewType::get(oa::oacSchematicSymbol)) {
             view_ptr->getName(ns_native, tmp_name);
-            yaml_fpath = yaml_dir / fmt::format("{}.yaml", (const char *)tmp_name);
+            yaml_fpath = yaml_dir / fmt::format("{}.{}.yaml", cell_name, (const char *)tmp_name);
             read_sch_cellview(ns_native, ns, logger, lib_name, cell_name,
                               std::string((const char *)tmp_name), primitive_libs)
                 .to_file(yaml_fpath.string());

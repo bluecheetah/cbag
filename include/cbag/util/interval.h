@@ -51,7 +51,7 @@ limitations under the License.
 #include <type_traits>
 #include <utility>
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include <cbag/common/typedefs.h>
 #include <cbag/util/sorted_vector.h>
@@ -265,6 +265,65 @@ template <class Interval = std::array<offset_t, 2>> class disjoint_intvs {
     }
     template <class K> bool overlaps(const K &key) const { return data_.equal_size(key) > 0; }
     template <class K> bool covers(const K &key) const { return data_.equal_size(key) == 1; }
+
+    coord_type get_next(coord_type val, bool even = false) const {
+        auto iter = data_.lower_bound(traits::interval<Interval>::construct(val, val + 1));
+        while (true) {
+            if (iter == data_.end()) {
+                throw std::out_of_range(
+                    fmt::format("cannot get next value of {} with even = {} in intervals:\n{}", val,
+                                even, to_string()));
+            }
+
+            /// now iter points to an interval that is greater than or contains val
+            val = std::max(val, traits::interval<Interval>::start(*iter));
+            val += (val & even);
+            if (val < traits::interval<Interval>::stop(*iter)) {
+                // val still contained by interval even after potential even-ness increment, return
+                return val;
+            }
+            // val falls outside of existing interval, need to move on and check next interval
+            ++iter;
+        }
+    }
+
+    coord_type get_prev(coord_type val, bool even = false) const {
+        auto iter = data_.upper_bound(traits::interval<Interval>::construct(val, val + 1));
+        while (true) {
+            if (iter == data_.begin()) {
+                throw std::out_of_range(
+                    fmt::format("cannot get previous value of {} with even = {} in intervals:\n{}",
+                                val, even, to_string()));
+            }
+            --iter;
+
+            // now iter point to an interval that is less than or contains val
+            val = std::min(val, traits::interval<Interval>::stop(*iter) - 1);
+            val -= (val & even);
+            if (val >= traits::interval<Interval>::start(*iter)) {
+                // val still contained by interval even after potential even-ness decrement, return
+                return val;
+            }
+            // val fall outside of current interval, need to move on and check previous interval.
+        }
+    }
+
+    std::string to_string() const {
+        if (data_.empty())
+            return "";
+
+        auto iter = data_.begin();
+        auto ans = fmt::format("[[{}, {})", traits::interval<Interval>::start(*iter),
+                               traits::interval<Interval>::stop(*iter));
+        ++iter;
+        auto stop = data_.end();
+        for (; iter != stop; ++iter) {
+            ans += fmt::format(", [{}, {})", traits::interval<Interval>::start(*iter),
+                               traits::interval<Interval>::stop(*iter));
+        }
+        ans += "]";
+        return ans;
+    }
 
     disjoint_intvs get_intersection(const disjoint_intvs &other) const {
         auto iter1 = data_.begin();
