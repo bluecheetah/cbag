@@ -1,3 +1,0 @@
-# cds.lib file with non-existent library definition
-DEFINE test_netlist test_netlist
-DEFINE foobar foobar

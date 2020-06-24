@@ -1,2 +1,0 @@
-DEFINE basic $CDSHOME/tools/dfII/etc/cdslib/basic
-DEFINE test_netlist test_netlist
