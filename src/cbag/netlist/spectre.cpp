@@ -143,6 +143,7 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     prop_map["i1"] = "val0";
     prop_map["i2"] = "val1";
     prop_map["ia"] = "ampl";
+    prop_map["io"] = "sinedc";
     prop_map["idc"] = "dc";
     prop_map["maxm"] = "max";
     prop_map["minm"] = "min";
@@ -159,6 +160,7 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     prop_map["v1"] = "val0";
     prop_map["v2"] = "val1";
     prop_map["va"] = "ampl";
+    prop_map["vo"] = "sinedc";
     prop_map["vdc"] = "dc";
     prop_map["vref"] = "probe";
     prop_map["xfm"] = "xfmag";
