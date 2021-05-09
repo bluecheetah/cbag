@@ -91,9 +91,13 @@ bool convert<cbag::layout::via_info>::decode(const Node &node, cbag::layout::via
         std::array<cbag::layout::venc_info, 2> enc_list = {
             node["bot_enc"].as<cbag::layout::venc_info>(),
             node["top_enc"].as<cbag::layout::venc_info>()};
+        auto priority = 1;
+        if (node["priority"])
+            priority = node["priority"].as<int>();
 
         rhs = cbag::layout::via_info(std::move(name), std::move(cut_dim), std::move(sp),
-                                     std::move(sp2_list), std::move(sp3_list), std::move(enc_list));
+                                     std::move(sp2_list), std::move(sp3_list), std::move(enc_list),
+                                     std::move(priority));
     } catch (...) {
         logger->warn("cbag::layout::via_info YAML decode exception.  Node:\n{}",
                      cbagyaml::node_to_str(node));
