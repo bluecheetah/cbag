@@ -120,7 +120,12 @@ std::unordered_map<std::string, std::string> new_cell_name_map() {
     cell_map["idc"] = "isource";
     cell_map["ind"] = "inductor";
     cell_map["ipulse"] = "isource";
+    cell_map["ipwlf"] = "isource";
     cell_map["isin"] = "isource";
+    cell_map["n1port"] = "nport";
+    cell_map["n2port"] = "nport";
+    cell_map["n3port"] = "nport";
+    cell_map["n4port"] = "nport";
     cell_map["res"] = "resistor";
     cell_map["switch"] = "relay";
     cell_map["vdc"] = "vsource";
@@ -135,6 +140,7 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     auto prop_map = std::unordered_map<std::string, std::string>();
     prop_map["acm"] = "mag";
     prop_map["acp"] = "phase";
+    prop_map["dataFile"] = "file";
     prop_map["egain"] = "gain";
     prop_map["fgain"] = "gain";
     prop_map["fileName"] = "file";
