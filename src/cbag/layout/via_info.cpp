@@ -62,9 +62,9 @@ venc_data::venc_data() = default;
 via_info::via_info() = default;
 
 via_info::via_info(std::string &&name, vector &&cdim, vector &&s, std::vector<vector> &&s2_list,
-                   std::vector<vector> &&s3_list, std::array<venc_info, 2> &&e_list)
+                   std::vector<vector> &&s3_list, std::array<venc_info, 2> &&e_list, int &&priority)
     : name_(std::move(name)), cut_dim_(std::move(cdim)), sp_list_(), sp2_list_(std::move(s2_list)),
-      sp3_list_(std::move(s3_list)), enc_list_(std::move(e_list)) {
+      sp3_list_(std::move(s3_list)), enc_list_(std::move(e_list)), priority_(std::move(priority)) {
     sp_list_.push_back(std::move(s));
     if (sp2_list_.empty()) {
         sp2_list_.push_back(sp_list_.front());
@@ -227,7 +227,7 @@ via_param via_info::get_via_param(vector box_dim, direction_1d vdir, orientation
             auto enc2y = (opt_mdim[1][1] - opt_arr_dim[1]) / 2;
 
             ans = {nx_cur, ny_cur, cut_dim_[0], cut_dim_[1], opt_sp[0], opt_sp[1], enc1x,
-                   enc1x,  enc1y,  enc1y,       enc2x,       enc2x,     enc2y,     enc2y};
+                   enc1x,  enc1y,  enc1y,       enc2x,       enc2x,     enc2y,     enc2y, priority_};
             return ans;
         }
 

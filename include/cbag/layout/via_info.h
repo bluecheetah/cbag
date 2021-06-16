@@ -79,12 +79,13 @@ class via_info {
     std::vector<vector> sp2_list_;
     std::vector<vector> sp3_list_;
     std::array<venc_info, 2> enc_list_;
+    int priority_;
 
   public:
     via_info();
 
     via_info(std::string &&name, vector &&cdim, vector &&s, std::vector<vector> &&s2_list,
-             std::vector<vector> &&s3_list, std::array<venc_info, 2> &&e_list);
+             std::vector<vector> &&s3_list, std::array<venc_info, 2> &&e_list, int &&priority);
 
     const std::string &get_name() const noexcept;
 

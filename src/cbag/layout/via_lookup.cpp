@@ -107,18 +107,21 @@ via_param via_lookup::get_via_param(vector dim, const std::string &via_id, direc
     via_param ans;
     auto opt_score = static_cast<uint64_t>(0);
     vector opt_ext_dim = {0, 0};
+    int opt_priority = 100;  // assume there won't be 100 priority levels
     for (const auto &vinfo : vinfo_list) {
         auto via_param = vinfo.get_via_param(dim, vdir, ex_dir, adj_ex_dir, extend);
         auto cur_score = helper::_get_via_score(via_param);
         vector cur_ext_dim;
+        int cur_priority = via_param.priority_;
         cur_ext_dim[vidx] = get_metal_dim(via_param, ex_dir, vdir);
         cur_ext_dim[1 - vidx] = get_metal_dim(via_param, adj_ex_dir, adj_vdir);
-        if (cur_score > opt_score ||
+        if ((cur_score > opt_score ||
             (cur_score > 0 && cur_score == opt_score && cur_ext_dim[0] <= opt_ext_dim[0] &&
-             cur_ext_dim[1] <= opt_ext_dim[1])) {
+             cur_ext_dim[1] <= opt_ext_dim[1])) && cur_priority <= opt_priority) {
             ans = std::move(via_param);
             opt_score = cur_score;
             opt_ext_dim = cur_ext_dim;
+            opt_priority = cur_priority;
         }
     }
 

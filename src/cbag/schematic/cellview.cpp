@@ -249,7 +249,7 @@ void cellview::add_pin(const std::string &new_name, enum_t term_type_code, enum_
         }
 
     } else if (sym_ptr) {
-        sym_ptr->add_pin(new_name, term_type_code, true);
+        sym_ptr->add_pin(new_name, term_type_code, sig_type_code, true);
     }
 }
 

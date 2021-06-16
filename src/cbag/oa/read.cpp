@@ -170,6 +170,10 @@ std::pair<std::string, cbag::value_t> read_app_def(oa::oaDesign *dsn, oa::oaAppD
         (static_cast<oa::oaStringAppDef<oa::oaDesign> *>(p))->get(dsn, tmp_str);
         return {std::move(key), std::string(tmp_str)};
     }
+    case oa::oacTimeAppDefType: {
+        return {std::move(key), static_cast<int_fast32_t>(
+                                    (static_cast<oa::oaTimeAppDef<oa::oaDesign> *>(p))->get(dsn))};
+    }
     default: {
         throw std::invalid_argument(
             fmt::format("Unsupported OA AppDef {} with type: {}, see developer.", key,
