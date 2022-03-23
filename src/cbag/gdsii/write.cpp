@@ -180,7 +180,7 @@ void write_lay_via(spdlog::logger &logger, std::ostream &stream, const layout::t
     get_via_cuts(v, rect_writer(logger, stream, gcl, gcp, scale));
 }
 
-void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpurp_t purp,
+void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpurp_t purp, gpurp_t purp_l,
                    const layout::pin &pin, bool make_pin_obj, double resolution, int scale) {
     auto box = pin.bbox();
     if (!is_physical(box)) {
@@ -200,7 +200,7 @@ void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpu
         xform = transformation(xc, yc, orientation::R0);
     }
 
-    write_text(logger, stream, lay, purp, pin.label(), xform, text_h, resolution, scale);
+    write_text(logger, stream, lay, purp_l, pin.label(), xform, text_h, resolution, scale);
     if (make_pin_obj) {
         write_box(logger, stream, lay, purp, box, scale);
     }
@@ -249,17 +249,23 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
 
     logger.info("Export layout pins.");
     auto purp = tech_ptr->get_pin_purpose();
+    auto purp_l = tech_ptr->get_label_purpose();
     auto make_pin_obj = tech_ptr->get_make_pin();
     for (auto iter = cv.begin_pin(); iter != cv.end_pin(); ++iter) {
         auto & [ lay, pin_list ] = *iter;
         auto gkey = get_gds_layer(lookup, lay, purp);
+        auto gkey_l = get_gds_layer(lookup, lay, purp_l);
         if (!gkey) {
             logger.warn("Cannot find layer/purpose ({}, {}) in layer map.  Skipping pins.", lay,
                         purp);
+        } else if (!gkey_l) {
+            logger.warn("Cannot find layer/purpose ({}, {}) in layer map.  Skipping labels.", lay,
+                        purp_l);
         } else {
             auto[glay, gpurp] = *gkey;
+            auto[glay_l, gpurp_l] = *gkey_l;
             for (const auto &pin : pin_list) {
-                write_lay_pin(logger, stream, glay, gpurp, pin, make_pin_obj, resolution, scale);
+                write_lay_pin(logger, stream, glay, gpurp, gpurp_l, pin, make_pin_obj, resolution, scale);
             }
         }
     }

@@ -93,6 +93,8 @@ purp_t tech::get_default_purpose() const { return lp_map.get_default_purpose(); 
 
 purp_t tech::get_pin_purpose() const { return lp_map.get_pin_purpose(); }
 
+purp_t tech::get_label_purpose() const { return lp_map.get_label_purpose(); }
+
 bool tech::exclude_is_blockage() const { return exc_blockage_; }
 
 const color_map_t &tech::get_color_map() const { return color_map; }

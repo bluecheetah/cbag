@@ -63,17 +63,20 @@ class lp_lookup {
     purp_map_t purp_map_;
     purp_t default_purpose_;
     purp_t pin_purpose_;
+    purp_t label_purpose_;
 
   public:
     // default constructor needed to make tech default constructable
     lp_lookup();
 
     lp_lookup(lay_map_t &&lay_map, purp_map_t &&purp_map, const std::string &def_purp,
-              const std::string &pin_purp);
+              const std::string &pin_purp, const std::string &label_purp);
 
     purp_t get_default_purpose() const;
 
     purp_t get_pin_purpose() const;
+
+    purp_t get_label_purpose() const;
 
     const std::string &get_layer_name(lay_t lay_id) const;
 

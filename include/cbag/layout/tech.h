@@ -136,6 +136,8 @@ class tech {
 
     purp_t get_pin_purpose() const;
 
+    purp_t get_label_purpose() const;
+
     bool exclude_is_blockage() const;
 
     const color_map_t &get_color_map() const;
