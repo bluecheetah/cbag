@@ -126,6 +126,7 @@ std::unordered_map<std::string, std::string> new_cell_name_map() {
     cell_map["n2port"] = "nport";
     cell_map["n3port"] = "nport";
     cell_map["n4port"] = "nport";
+    cell_map["n8port"] = "nport";
     cell_map["res"] = "resistor";
     cell_map["switch"] = "relay";
     cell_map["vdc"] = "vsource";
