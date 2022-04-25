@@ -122,10 +122,12 @@ std::unordered_map<std::string, std::string> new_cell_name_map() {
     cell_map["ipulse"] = "isource";
     cell_map["ipwlf"] = "isource";
     cell_map["isin"] = "isource";
+    cell_map["mind"] = "mutual_inductor";
     cell_map["n1port"] = "nport";
     cell_map["n2port"] = "nport";
     cell_map["n3port"] = "nport";
     cell_map["n4port"] = "nport";
+    cell_map["n6port"] = "nport";
     cell_map["n8port"] = "nport";
     cell_map["res"] = "resistor";
     cell_map["switch"] = "relay";
@@ -152,6 +154,7 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     prop_map["ia"] = "ampl";
     prop_map["io"] = "sinedc";
     prop_map["idc"] = "dc";
+    prop_map["k"] = "coupling";
     prop_map["maxm"] = "max";
     prop_map["minm"] = "min";
     prop_map["pacm"] = "pacmag";
