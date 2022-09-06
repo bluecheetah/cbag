@@ -60,6 +60,7 @@ Node convert<cbag::sch::cellview_info>::encode(const cbag::sch::cellview_info &r
     root.force_insert("nets", rhs.nets);
     root.force_insert("props", rhs.props);
     root.force_insert("is_prim", rhs.is_prim);
+    root.force_insert("va", rhs.va);
     root.force_insert("ignore", rhs.ignore);
     if (!rhs.term_net_attrs.empty())
         root.force_insert("term_net_attrs", rhs.term_net_attrs);
@@ -83,6 +84,10 @@ bool convert<cbag::sch::cellview_info>::decode(const Node &node, cbag::sch::cell
         rhs.nets = node["nets"].as<std::vector<std::string>>();
         rhs.props = node["props"].as<cbag::param_map>();
         rhs.is_prim = node["is_prim"].as<bool>();
+
+        auto va = node["va"];
+        if (va)
+            rhs.va = va.as<std::string>();
 
         auto ignore_node = node["ignore"];
         if (ignore_node)

@@ -281,9 +281,14 @@ void traits::nstream<spectre_stream>::write_unit_instance(
         spirit::util::get_name_bits(net_ast_list[inst_idx],
                                     b.get_bit_inserter(prefix, net_map_ptr, tag));
     }
-    // write instance cell name
+
+    // write instance cell name and properties
     spectre::write_instance_cell_name(b.get_back_inserter(), params, info, stream);
     b.to_file(stream, spirit::namespace_cdba{});
+
+    // include veriloga file if it exists
+    if (info.va != "")
+        stream << "ahdl_include \"" << info.va << "\"\n";
 }
 
 void traits::nstream<spectre_stream>::append_netlist(type &stream, const std::string &netlist) {

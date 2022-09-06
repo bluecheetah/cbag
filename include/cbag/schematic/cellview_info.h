@@ -73,6 +73,7 @@ struct cellview_info {
     std::vector<std::string> nets;
     param_map props;
     bool is_prim = false;
+    std::string va = "";
     bool ignore = false;
     util::sorted_map<std::string, attr_map_t> term_net_attrs;
     const cellview *cv_ptr = nullptr;
