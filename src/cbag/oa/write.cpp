@@ -720,7 +720,7 @@ void create_lay_inst(const oa::oaCdbaNS &ns, oa::oaBlock *blk, const std::string
         // convert BAG array parameters to OA array parameters
         auto[oa_nx, oa_ny, oa_spx, oa_spy] =
             cbag::convert_array(inst.xform, inst.nx, inst.ny, inst.spx, inst.spy);
-        oa::oaArrayInst::create(blk, lib_oa, cell_oa, view_oa, inst_name, xform, oa_spx, oa_spy,
+        oa::oaArrayInst::create(blk, lib_oa, cell_oa, view_oa, inst_name, xform, oa_spx * scale, oa_spy * scale,
                                 oa_ny, oa_nx, params_ptr);
     } else {
         oa::oaScalarInst::create(blk, lib_oa, cell_oa, view_oa, inst_name, xform, params_ptr);
