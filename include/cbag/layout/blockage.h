@@ -57,7 +57,7 @@ namespace layout {
 class blockage : public poly_t {
   private:
     blockage_type type;
-    lay_t layer;
+    lay_t layer_blk;
 
   public:
     explicit blockage(blockage_type type = blockage_type::routing, lay_t layer = 0) noexcept;
