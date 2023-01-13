@@ -56,6 +56,7 @@ limitations under the License.
 #include <cbag/common/layer_t.h>
 #include <cbag/common/point_t.h>
 #include <cbag/common/transformation.h>
+#include <cbag/common/typedefs.h>
 #include <cbag/gdsii/record_type.h>
 #include <cbag/gdsii/typedefs.h>
 #include <cbag/layout/polygons.h>
@@ -152,7 +153,8 @@ std::tuple<gds_layer_t, layout::poly_t> read_box(spdlog::logger &logger, std::is
 
 std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger, std::istream &stream);
 
-gds_layer_t read_path(spdlog::logger &logger, std::istream &stream);
+std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_t>> read_path(spdlog::logger &logger,
+                                                                                              std::istream &stream);
 
 layout::instance read_instance(
     spdlog::logger &logger, std::istream &stream, std::size_t &cnt,

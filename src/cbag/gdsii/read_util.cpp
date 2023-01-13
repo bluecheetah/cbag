@@ -56,6 +56,7 @@ limitations under the License.
 #include <cbag/layout/cellview.h>
 #include <cbag/layout/instance.h>
 #include <cbag/layout/label.h>
+#include <cbag/layout/path.h>
 
 namespace cbag {
 namespace gdsii {
@@ -260,29 +261,44 @@ std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger,
     return {gds_layer_t{glay, gpurp}, layout::poly_t(std::move(pt_vec))};
 }
 
-gds_layer_t read_path(spdlog::logger &logger, std::istream &stream) {
+std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_t>> read_path(spdlog::logger &logger,
+                                                                                              std::istream &stream) {
     auto glay = read_int<record_type::LAYER>(logger, stream);
     auto gpurp = read_int<record_type::DATATYPE>(logger, stream);
 
+    // read path_type if it exists
     auto rec_peek = peek_record_header(stream);
+    auto path_type = 0;
     if (std::get<0>(rec_peek) == record_type::PATHTYPE) {
-        read_int<record_type::PATHTYPE>(logger, stream);
+        path_type = read_int<record_type::PATHTYPE>(logger, stream);
     }
+
+    // read width
+    check_record_header<record_type::WIDTH, sizeof(int32_t), 1>(stream);
+    auto width = read_bytes<int32_t>(stream);
+
+    // read begin_extn and end_extn if those exist
     rec_peek = peek_record_header(stream);
-    if (std::get<0>(rec_peek) == record_type::WIDTH) {
-        check_record_header<record_type::WIDTH, sizeof(int32_t), 1>(stream);
-        read_bytes<int32_t>(stream);
+    auto begin_extn = 0;
+    auto end_extn = 0;
+    if (std::get<0>(rec_peek) == record_type::BEGINEXTN) {
+        check_record_header<record_type::BEGINEXTN, sizeof(int32_t), 1>(stream);
+        begin_extn = read_bytes<int32_t>(stream);
+        check_record_header<record_type::ENDEXTN, sizeof(int32_t), 1>(stream);
+        end_extn = read_bytes<int32_t>(stream);
     }
 
     // divide by 2 to get number of points instead of number of coordinates.
     auto num = check_record_header<record_type::XY, sizeof(int32_t)>(stream) / 2;
 
+    std::vector<point_t> pt_vec;
+    pt_vec.reserve(num);
     for (decltype(num) idx = 0; idx < num; ++idx) {
-        read_point(stream);
+        pt_vec.emplace_back(read_point(stream));
     }
     read_ele_end(logger, stream);
 
-    return {glay, gpurp};
+    return {gds_layer_t{glay, gpurp}, width, path_type, begin_extn, end_extn, pt_vec};
 }
 
 std::string read_inst_name(spdlog::logger &logger, std::istream &stream, std::size_t &cnt) {

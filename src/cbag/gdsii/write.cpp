@@ -220,15 +220,15 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
     write_struct_begin(logger, stream, time_vec);
     write_struct_name(logger, stream, cell_name);
 
-    logger.info("Export layout instances.");
     for (auto iter = cv.begin_inst(); iter != cv.end_inst(); ++iter) {
+        logger.info("Writing layout instance.");
         auto & [ inst_name, inst ] = *iter;
         write_instance(logger, stream, inst.get_cell_name(&rename_map), inst_name, inst.xform,
                        scale, inst.nx, inst.ny, inst.spx, inst.spy);
     }
 
-    logger.info("Export layout geometries.");
     for (auto iter = cv.begin_geometry(); iter != cv.end_geometry(); ++iter) {
+        logger.info("Writing layout geometry.");
         auto & [ layer_key, geo ] = *iter;
         auto gkey = lookup.get_gds_layer(layer_key);
         if (!gkey) {
@@ -240,18 +240,38 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
         }
     }
 
-    logger.info("Export layout vias.");
+    for (auto iter = cv.begin_path(); iter != cv.end_path(); ++iter) {
+        logger.info("Writing layout paths.");
+        auto layer_key = iter->first;
+        auto gkey = lookup.get_gds_layer(layer_key);
+        if (!gkey) {
+            logger.warn("Cannot find layer/purpose ({}, {}) in layer map.  Skipping path.",
+                        layer_key.first, layer_key.second);
+        } else {
+            auto[glay, gpurp] = *gkey;
+            for (const auto &path : iter->second) {
+                auto path_type = path.get_path_type();
+                auto width = path.get_width();
+                auto begin_extn = path.get_begin_extn();
+                auto end_extn = path.get_end_extn();
+                auto pt_vec = path.get_pt_vec();
+                write_path(logger, stream, glay, gpurp, path_type, width, begin_extn, end_extn, pt_vec, scale);
+            }
+        }
+    }
+
     auto tech_ptr = cv.get_tech();
     auto resolution = tech_ptr->get_resolution();
     for (auto iter = cv.begin_via(); iter != cv.end_via(); ++iter) {
+        logger.info("Writing layout via.");
         write_lay_via(logger, stream, *tech_ptr, lookup, *iter, scale);
     }
 
-    logger.info("Export layout pins.");
     auto purp = tech_ptr->get_pin_purpose();
     auto purp_l = tech_ptr->get_label_purpose();
     auto make_pin_obj = tech_ptr->get_make_pin();
     for (auto iter = cv.begin_pin(); iter != cv.end_pin(); ++iter) {
+        logger.info("Writing layout pins.");
         auto & [ lay, pin_list ] = *iter;
         auto gkey = get_gds_layer(lookup, lay, purp);
         auto gkey_l = get_gds_layer(lookup, lay, purp_l);
@@ -270,14 +290,14 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
         }
     }
 
-    logger.info("Export layout labels.");
     for (auto iter = cv.begin_label(); iter != cv.end_label(); ++iter) {
+        logger.info("Writing layout label.");
         write_lay_label(logger, stream, *iter, resolution, scale);
     }
 
-    logger.info("Export layout boundaries.");
     auto pr_prop_str = std::string("oaBoundary:pr");
     for (auto iter = cv.begin_boundary(); iter != cv.end_boundary(); ++iter) {
+        logger.info("Writing layout boundary.");
         auto btype = iter->get_type();
         auto gkey = lookup.get_gds_layer(btype);
         if (!gkey) {
@@ -293,9 +313,9 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
         }
     }
 
-    logger.info("Export layer blockages.");
     for (auto iter = cv.begin_lay_block(); iter != cv.end_lay_block(); ++iter) {
         for (const auto &blockage : iter->second) {
+            logger.info("Writing layer blockage.");
             auto btype = blockage.get_type();
             auto lay_id = blockage.get_layer();
             auto gkey = lookup.get_gds_layer(lay_id, btype);

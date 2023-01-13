@@ -173,10 +173,11 @@ std::tuple<std::string, std::shared_ptr<layout::cellview>> read_lay_cellview(
             break;
         }
         case record_type::PATH: {
-            auto gds_key = read_path(logger, stream);
-            auto lay_t = rmap.get_layer_t(gds_key);
-            logger.warn("Found PATH on layer ({}, {}) in gds, which is not supported.  Skipping.",
-                        lay_t.first, lay_t.second);
+            logger.info("Reading layout path.");
+            auto[gds_key, width, path_type, begin_extn, end_extn, pt_vec] = read_path(logger, stream);
+            auto map_val = rmap.get_layer_t(gds_key);
+            auto pth = layout::path(map_val, width, pt_vec, path_type, begin_extn, end_extn);
+            cv_ptr->add_object(std::move(pth));
             break;
         }
         case record_type::ENDSTR:

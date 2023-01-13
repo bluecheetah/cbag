@@ -68,6 +68,7 @@ namespace layout {
 
 class boundary;
 class blockage;
+class path;
 class pin;
 class via;
 class via_wrapper;
@@ -80,6 +81,7 @@ class track_id;
 using geo_index_t = polygon::index::geo_index<coord_t>;
 
 using geo_map_t = util::sorted_map<layer_t, poly_set_t>;
+using path_map_t = util::sorted_map<layer_t, std::vector<path>>;
 using block_map_t = util::sorted_map<lay_t, std::vector<blockage>>;
 using pin_map_t = util::sorted_map<lay_t, std::vector<pin>>;
 using inst_map_t = util::sorted_map<std::string, instance>;
@@ -92,6 +94,7 @@ class cellview {
     std::string cell_name;
     std::vector<std::shared_ptr<geo_index_t>> index_list;
     geo_map_t geo_map;
+    path_map_t path_map;
     inst_map_t inst_map;
     pin_map_t pin_map;
     std::vector<via> via_list;
@@ -122,6 +125,8 @@ class cellview {
     auto end_inst() const -> decltype(inst_map.cend());
     auto begin_geometry() const -> decltype(geo_map.cbegin());
     auto end_geometry() const -> decltype(geo_map.cend());
+    auto begin_path() const -> decltype(path_map.cbegin());
+    auto end_path() const -> decltype(path_map.cend());
     auto begin_via() const -> decltype(via_list.cbegin());
     auto end_via() const -> decltype(via_list.cend());
     auto begin_lay_block() const -> decltype(lay_block_map.cbegin());
@@ -141,6 +146,7 @@ class cellview {
 
     void add_label(layer_t &&key, transformation &&xform, std::string &&label, offset_t height);
 
+    void add_object(const path &obj);
     void add_object(const blockage &obj);
     void add_object(const boundary &obj);
     void add_object(boundary &&obj);

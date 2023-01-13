@@ -208,6 +208,8 @@ auto cellview::begin_inst() const -> decltype(inst_map.cbegin()) { return inst_m
 auto cellview::end_inst() const -> decltype(inst_map.cend()) { return inst_map.cend(); }
 auto cellview::begin_geometry() const -> decltype(geo_map.cbegin()) { return geo_map.cbegin(); }
 auto cellview::end_geometry() const -> decltype(geo_map.cend()) { return geo_map.cend(); }
+auto cellview::begin_path() const -> decltype(path_map.cbegin()) { return path_map.cbegin(); }
+auto cellview::end_path() const -> decltype(path_map.cend()) { return path_map.cend(); }
 auto cellview::begin_via() const -> decltype(via_list.cbegin()) { return via_list.cbegin(); }
 auto cellview::end_via() const -> decltype(via_list.cend()) { return via_list.cend(); }
 auto cellview::begin_lay_block() const -> decltype(lay_block_map.cbegin()) {
@@ -250,6 +252,15 @@ void cellview::add_pin(lay_t lay_id, std::string &&net, std::string &&label, box
 void cellview::add_label(layer_t &&key, transformation &&xform, std::string &&label,
                          offset_t height) {
     label_list.emplace_back(std::move(key), std::move(xform), std::move(label), height);
+}
+
+void cellview::add_object(const path &obj) {
+    auto lay_purp = obj.get_layer_t();
+    auto iter = path_map.find(lay_purp);
+    if (iter == path_map.end()) {
+        iter = path_map.emplace(lay_purp, std::vector<path>()).first;
+    }
+    iter->second.push_back(obj);
 }
 
 void cellview::add_object(const blockage &obj) {
