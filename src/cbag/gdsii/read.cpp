@@ -134,7 +134,7 @@ std::tuple<std::string, std::shared_ptr<layout::cellview>> read_lay_cellview(
     spdlog::logger &logger, std::istream &stream, const std::string &lib_name,
     const std::shared_ptr<const layout::routing_grid> &g,
     const std::shared_ptr<const layout::track_coloring> &colors, const gds_rlookup &rmap,
-    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map) {
+    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map, int scale) {
     auto cell_name = read_struct_name(logger, stream);
 
     logger.info("GDS cellview name: " + cell_name);
@@ -147,34 +147,34 @@ std::tuple<std::string, std::shared_ptr<layout::cellview>> read_lay_cellview(
         switch (rtype) {
         case record_type::TEXT: {
             logger.info("Reading layout text.");
-            auto[gds_key, xform, text, text_h_dbl] = read_text(logger, stream);
-            auto text_h = static_cast<offset_t>(text_h_dbl / resolution);
+            auto[gds_key, xform, text, text_h] = read_text(logger, stream, resolution, scale);
+            text_h = static_cast<offset_t>(text_h);
             cv_ptr->add_label(rmap.get_layer_t(gds_key), std::move(xform), std::move(text), text_h);
             break;
         }
         case record_type::SREF:
             logger.info("Reading layout instance.");
-            cv_ptr->add_object(read_instance(logger, stream, inst_cnt, master_map));
+            cv_ptr->add_object(read_instance(logger, stream, inst_cnt, master_map, scale));
             break;
         case record_type::AREF:
             logger.info("Reading layout array instance.");
-            cv_ptr->add_object(read_arr_instance(logger, stream, inst_cnt, master_map));
+            cv_ptr->add_object(read_arr_instance(logger, stream, inst_cnt, master_map, scale));
             break;
         case record_type::BOX: {
             logger.info("Reading layout box.");
-            auto[gds_key, poly] = read_box(logger, stream);
+            auto[gds_key, poly] = read_box(logger, stream, scale);
             add_object(logger, *cv_ptr, std::move(gds_key), std::move(poly), rmap);
             break;
         }
         case record_type::BOUNDARY: {
             logger.info("Reading layout boundary.");
-            auto[gds_key, poly] = read_boundary(logger, stream);
+            auto[gds_key, poly] = read_boundary(logger, stream, scale);
             add_object(logger, *cv_ptr, std::move(gds_key), std::move(poly), rmap);
             break;
         }
         case record_type::PATH: {
             logger.info("Reading layout path.");
-            auto[gds_key, width, path_type, begin_extn, end_extn, pt_vec] = read_path(logger, stream);
+            auto[gds_key, width, path_type, begin_extn, end_extn, pt_vec] = read_path(logger, stream, scale);
             auto map_val = rmap.get_layer_t(gds_key);
             auto pth = layout::path(map_val, width, pt_vec, path_type, begin_extn, end_extn);
             cv_ptr->add_object(std::move(pth));

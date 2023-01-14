@@ -98,7 +98,7 @@ std::tuple<std::string, std::shared_ptr<layout::cellview>> read_lay_cellview(
     spdlog::logger &logger, std::istream &stream, const std::string &lib_name,
     const std::shared_ptr<const layout::routing_grid> &g,
     const std::shared_ptr<const layout::track_coloring> &colors, const gds_rlookup &rmap,
-    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map);
+    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map, int scale);
 
 template <class OutIter>
 std::string
@@ -106,12 +106,19 @@ read_gds_stream(std::istream &stream, const std::string &layer_map, const std::s
                 const std::shared_ptr<const layout::routing_grid> &g,
                 const std::shared_ptr<const layout::track_coloring> &colors, OutIter &&out_iter) {
     auto log_ptr = get_cbag_logger();
+    auto &tech = *(g->get_tech());
 
     // get gds file stream
+    auto res = tech.get_resolution();
+    auto gds_res = tech.get_gds_resolution();
+    auto scale = static_cast<int>(std::round(res / gds_res));
+
+    // Unlike write_gds_start(), read_gds_start() does not require gds_res and user_unit,
+    // because those gds entries are skipped during reading.
     auto lib_name = read_gds_start(*log_ptr, stream);
     log_ptr->info("Reading GDS library: {}", lib_name);
 
-    gds_rlookup rmap(layer_map, obj_map, *(g->get_tech()));
+    gds_rlookup rmap(layer_map, obj_map, tech);
     std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> cv_map;
     while (true) {
         auto[rtype, rsize] = read_record_header(stream);
@@ -120,7 +127,7 @@ read_gds_stream(std::istream &stream, const std::string &layer_map, const std::s
             log_ptr->info("Reading GDS cellview");
             stream.ignore(rsize);
             auto[cell_name, cv_ptr] =
-                read_lay_cellview(*log_ptr, stream, lib_name, g, colors, rmap, cv_map);
+                read_lay_cellview(*log_ptr, stream, lib_name, g, colors, rmap, cv_map, scale);
 
             cv_map.emplace(cell_name, cv_ptr);
             *out_iter = std::move(cv_ptr);

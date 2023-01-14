@@ -176,35 +176,40 @@ std::tuple<transformation, double> read_transform_info(spdlog::logger &logger,
     return {ans, mag};
 }
 
-point_t read_point(std::istream &stream) {
+point_t read_point(std::istream &stream, int scale) {
     auto x = read_bytes<int32_t>(stream);
     auto y = read_bytes<int32_t>(stream);
+
+    x = static_cast<int32_t>(x / scale);
+    y = static_cast<int32_t>(y / scale);
     return {x, y};
 }
 
 std::tuple<transformation, double> read_transform_mag(spdlog::logger &logger,
-                                                      std::istream &stream) {
+                                                      std::istream &stream, int scale) {
     auto ans = read_transform_info(logger, stream);
     check_record_header<record_type::XY, sizeof(int32_t), 2>(stream);
-    auto pt = read_point(stream);
+    auto pt = read_point(stream, scale);
     std::get<0>(ans).move_by(x(pt), y(pt));
 
     return ans;
 }
 
-transformation read_transform(spdlog::logger &logger, std::istream &stream) {
-    return std::get<0>(read_transform_mag(logger, stream));
+transformation read_transform(spdlog::logger &logger, std::istream &stream, int scale) {
+    return std::get<0>(read_transform_mag(logger, stream, scale));
 }
 
 std::tuple<gds_layer_t, transformation, std::string, double> read_text(spdlog::logger &logger,
-                                                                       std::istream &stream) {
+                                                                       std::istream &stream,
+                                                                       double resolution, int scale) {
     auto glay = read_int<record_type::LAYER>(logger, stream);
     auto gpurp = read_int<record_type::TEXTTYPE>(logger, stream);
 
     auto rec_peek = peek_record_header(stream);
     if (std::get<0>(rec_peek) == record_type::PRESENTATION)
         read_skip<record_type::PRESENTATION, sizeof(uint16_t), 1>(stream);
-    auto[xform, mag] = read_transform_mag(logger, stream);
+    auto[xform, mag] = read_transform_mag(logger, stream, scale);
+    mag = static_cast<double>(mag / resolution);
 
     auto text = read_name<record_type::STRING>(logger, stream);
     read_ele_end(logger, stream);
@@ -212,25 +217,25 @@ std::tuple<gds_layer_t, transformation, std::string, double> read_text(spdlog::l
     return {gds_layer_t{glay, gpurp}, std::move(xform), std::move(text), mag};
 }
 
-std::tuple<gds_layer_t, layout::poly_t> read_box(spdlog::logger &logger, std::istream &stream) {
+std::tuple<gds_layer_t, layout::poly_t> read_box(spdlog::logger &logger, std::istream &stream, int scale) {
     auto glay = read_int<record_type::LAYER>(logger, stream);
     auto gpurp = read_int<record_type::BOXTYPE>(logger, stream);
     check_record_header<record_type::XY, sizeof(int32_t), 10>(stream);
 
     std::vector<point_t> pt_vec;
     pt_vec.reserve(4);
-    pt_vec.emplace_back(read_point(stream));
-    pt_vec.emplace_back(read_point(stream));
-    pt_vec.emplace_back(read_point(stream));
-    pt_vec.emplace_back(read_point(stream));
-    read_point(stream);
+    pt_vec.emplace_back(read_point(stream, scale));
+    pt_vec.emplace_back(read_point(stream, scale));
+    pt_vec.emplace_back(read_point(stream, scale));
+    pt_vec.emplace_back(read_point(stream, scale));
+    read_point(stream, scale);
     read_ele_end(logger, stream);
 
     return {gds_layer_t{glay, gpurp}, layout::poly_t(std::move(pt_vec))};
 }
 
 std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger,
-                                                      std::istream &stream) {
+                                                      std::istream &stream, int scale) {
     auto glay = read_int<record_type::LAYER>(logger, stream);
     auto gpurp = read_int<record_type::DATATYPE>(logger, stream);
     // divide by 2 to get number of points instead of number of coordinates.
@@ -239,7 +244,7 @@ std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger,
     std::vector<point_t> pt_vec;
     pt_vec.reserve(num);
     for (decltype(num) idx = 0; idx < num; ++idx) {
-        pt_vec.emplace_back(read_point(stream));
+        pt_vec.emplace_back(read_point(stream, scale));
     }
 
     // a PR boundary may have a property attached to it
@@ -262,7 +267,8 @@ std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger,
 }
 
 std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_t>> read_path(spdlog::logger &logger,
-                                                                                              std::istream &stream) {
+                                                                                              std::istream &stream,
+                                                                                              int scale) {
     auto glay = read_int<record_type::LAYER>(logger, stream);
     auto gpurp = read_int<record_type::DATATYPE>(logger, stream);
 
@@ -276,6 +282,7 @@ std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_
     // read width
     check_record_header<record_type::WIDTH, sizeof(int32_t), 1>(stream);
     auto width = read_bytes<int32_t>(stream);
+    width = static_cast<int32_t>(width / scale);
 
     // read begin_extn and end_extn if those exist
     rec_peek = peek_record_header(stream);
@@ -284,8 +291,10 @@ std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_
     if (std::get<0>(rec_peek) == record_type::BEGINEXTN) {
         check_record_header<record_type::BEGINEXTN, sizeof(int32_t), 1>(stream);
         begin_extn = read_bytes<int32_t>(stream);
+        begin_extn = static_cast<int32_t>(begin_extn / scale);
         check_record_header<record_type::ENDEXTN, sizeof(int32_t), 1>(stream);
         end_extn = read_bytes<int32_t>(stream);
+        end_extn = static_cast<int32_t>(end_extn / scale);
     }
 
     // divide by 2 to get number of points instead of number of coordinates.
@@ -294,7 +303,7 @@ std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_
     std::vector<point_t> pt_vec;
     pt_vec.reserve(num);
     for (decltype(num) idx = 0; idx < num; ++idx) {
-        pt_vec.emplace_back(read_point(stream));
+        pt_vec.emplace_back(read_point(stream, scale));
     }
     read_ele_end(logger, stream);
 
@@ -333,7 +342,7 @@ std::string read_inst_name(spdlog::logger &logger, std::istream &stream, std::si
 
 layout::instance read_instance(
     spdlog::logger &logger, std::istream &stream, std::size_t &cnt,
-    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map) {
+    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map, int scale) {
     auto cell_name = read_name<record_type::SNAME>(logger, stream);
 
     auto iter = master_map.find(cell_name);
@@ -343,14 +352,14 @@ layout::instance read_instance(
         throw std::runtime_error(msg);
     }
     auto master = iter->second;
-    auto xform = read_transform(logger, stream);
+    auto xform = read_transform(logger, stream, scale);
     auto inst_name = read_inst_name(logger, stream, cnt);
     return {std::move(inst_name), master, std::move(xform)};
 }
 
 layout::instance read_arr_instance(
     spdlog::logger &logger, std::istream &stream, std::size_t &cnt,
-    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map) {
+    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map, int scale) {
     auto cell_name = read_name<record_type::SNAME>(logger, stream);
 
     auto iter = master_map.find(cell_name);
@@ -363,9 +372,9 @@ layout::instance read_arr_instance(
 
     auto[gds_nx, gds_ny] = read_col_row(logger, stream);
     check_record_header<record_type::XY, sizeof(int32_t), 6>(stream);
-    auto p0 = read_point(stream);
-    auto p1 = read_point(stream);
-    auto p2 = read_point(stream);
+    auto p0 = read_point(stream, scale);
+    auto p1 = read_point(stream, scale);
+    auto p2 = read_point(stream, scale);
     auto inst_name = read_inst_name(logger, stream, cnt);
 
     xform.move_by(p0[0], p0[1]);
