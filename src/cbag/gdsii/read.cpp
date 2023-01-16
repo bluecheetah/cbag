@@ -52,6 +52,8 @@ limitations under the License.
 #include <cbag/gdsii/read.h>
 #include <cbag/gdsii/read_util.h>
 
+#include <cbag/polygon/polygon_concept.h>
+
 namespace cbag {
 namespace gdsii {
 
@@ -110,7 +112,12 @@ void add_object(spdlog::logger &logger, layout::cellview &ans, gds_layer_t &&gds
     auto map_val = rmap.get_mapping(gds_key);
     std::visit(
         overload{
-            [&ans, &poly](layer_t k) { ans.add_shape(k, poly); },
+            [&ans, &poly](layer_t k) {
+                if (is_positive(poly))
+                    ans.add_shape(k, poly);
+                else
+                    ans.add_neg_shape(k, poly);
+            },
             [&ans, &poly](boundary_type k) {
                 auto bnd = layout::boundary(k);
                 bnd.set(poly.begin(), poly.end());

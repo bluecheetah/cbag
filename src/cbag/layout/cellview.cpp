@@ -96,6 +96,14 @@ struct cellview::helper {
         return iter->second;
     }
 
+    static std::vector<poly_t> &make_neg_geometry(cellview &self, layer_t key) {
+        auto iter = self.neg_geo_map.find(key);
+        if (iter == self.neg_geo_map.end()) {
+            iter = self.neg_geo_map.emplace(std::move(key), std::vector<poly_t>()).first;
+        }
+        return iter->second;
+    }
+
     static std::shared_ptr<geo_index_t> &get_geo_index(cellview &self, level_t lev) {
         return self.index_list[lev - self.grid_->get_bot_level()];
     }
@@ -111,6 +119,11 @@ struct cellview::helper {
             auto[spx, spy] = get_margins(grid, key, *lev_opt, obj);
             index->insert(obj, spx, spy);
         }
+    }
+
+    template <typename T> static void add_neg_shape(cellview &self, layer_t key, const T &obj) {
+        auto &geo = make_neg_geometry(self, key);
+        geo.push_back(obj);
     }
 
     static util::disjoint_intvs<> get_ip_fill_intvs(const geo_index_t &geo_idx,
@@ -208,6 +221,8 @@ auto cellview::begin_inst() const -> decltype(inst_map.cbegin()) { return inst_m
 auto cellview::end_inst() const -> decltype(inst_map.cend()) { return inst_map.cend(); }
 auto cellview::begin_geometry() const -> decltype(geo_map.cbegin()) { return geo_map.cbegin(); }
 auto cellview::end_geometry() const -> decltype(geo_map.cend()) { return geo_map.cend(); }
+auto cellview::begin_neg_geometry() const -> decltype(neg_geo_map.cbegin()) { return neg_geo_map.cbegin(); }
+auto cellview::end_neg_geometry() const -> decltype(neg_geo_map.cend()) { return neg_geo_map.cend(); }
 auto cellview::begin_path() const -> decltype(path_map.cbegin()) { return path_map.cbegin(); }
 auto cellview::end_path() const -> decltype(path_map.cend()) { return path_map.cend(); }
 auto cellview::begin_via() const -> decltype(via_list.cbegin()) { return via_list.cbegin(); }
@@ -369,6 +384,7 @@ void cellview::add_shape(layer_t key, const box_collection &obj) {
 void cellview::add_shape(layer_t key, const poly_90_t &obj) { helper::add_shape(*this, key, obj); }
 void cellview::add_shape(layer_t key, const poly_45_t &obj) { helper::add_shape(*this, key, obj); }
 void cellview::add_shape(layer_t key, const poly_t &obj) { helper::add_shape(*this, key, obj); }
+void cellview::add_neg_shape(layer_t key, const poly_t &obj) { helper::add_neg_shape(*this, key, obj); }
 void cellview::add_shape(layer_t key, const poly_set_t &obj) {
     auto &geo = helper::make_geometry(*this, key);
     geo.insert(obj);

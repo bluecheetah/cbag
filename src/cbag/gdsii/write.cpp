@@ -240,6 +240,21 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
         }
     }
 
+    for (auto iter = cv.begin_neg_geometry(); iter != cv.end_neg_geometry(); ++iter) {
+        logger.info("Writing layout negative geometry.");
+        auto layer_key = iter->first;
+        auto gkey = lookup.get_gds_layer(layer_key);
+        if (!gkey) {
+            logger.warn("Cannot find layer/purpose ({}, {}) in layer map.  Skipping geometry.",
+                        layer_key.first, layer_key.second);
+        } else {
+            auto[glay, gpurp] = *gkey;
+            for (const auto &geo : iter->second) {
+                write_polygon(logger, stream, glay, gpurp, geo, scale);
+            }
+        }
+    }
+
     for (auto iter = cv.begin_path(); iter != cv.end_path(); ++iter) {
         logger.info("Writing layout paths.");
         auto layer_key = iter->first;

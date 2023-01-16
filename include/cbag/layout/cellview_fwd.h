@@ -81,6 +81,7 @@ class track_id;
 using geo_index_t = polygon::index::geo_index<coord_t>;
 
 using geo_map_t = util::sorted_map<layer_t, poly_set_t>;
+using neg_geo_map_t = util::sorted_map<layer_t, std::vector<poly_t>>;
 using path_map_t = util::sorted_map<layer_t, std::vector<path>>;
 using block_map_t = util::sorted_map<lay_t, std::vector<blockage>>;
 using pin_map_t = util::sorted_map<lay_t, std::vector<pin>>;
@@ -94,6 +95,7 @@ class cellview {
     std::string cell_name;
     std::vector<std::shared_ptr<geo_index_t>> index_list;
     geo_map_t geo_map;
+    neg_geo_map_t neg_geo_map;
     path_map_t path_map;
     inst_map_t inst_map;
     pin_map_t pin_map;
@@ -125,6 +127,8 @@ class cellview {
     auto end_inst() const -> decltype(inst_map.cend());
     auto begin_geometry() const -> decltype(geo_map.cbegin());
     auto end_geometry() const -> decltype(geo_map.cend());
+    auto begin_neg_geometry() const -> decltype(neg_geo_map.cbegin());
+    auto end_neg_geometry() const -> decltype(neg_geo_map.cend());
     auto begin_path() const -> decltype(path_map.cbegin());
     auto end_path() const -> decltype(path_map.cend());
     auto begin_via() const -> decltype(via_list.cbegin());
@@ -158,6 +162,7 @@ class cellview {
     void add_shape(layer_t key, const poly_90_t &obj);
     void add_shape(layer_t key, const poly_45_t &obj);
     void add_shape(layer_t key, const poly_t &obj);
+    void add_neg_shape(layer_t key, const poly_t &obj);
     void add_shape(layer_t key, const poly_set_t &obj);
     void add_warr(const track_id &tid, coord_t lower, coord_t upper, bool is_dummy = false);
     void do_max_space_fill(level_t level, const box_t &bbox, bool fill_boundaries,
