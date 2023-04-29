@@ -325,7 +325,7 @@ void write_path(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpur
 }
 
 void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-               const box_t &box, int scale) {
+               const box_t &box, int scale, const std::string *prop_ptr) {
     write_empty<record_type::BOUNDARY>(logger, stream);
     write_int<record_type::LAYER>(logger, stream, layer);
     write_int<record_type::DATATYPE>(logger, stream, purpose);
@@ -336,6 +336,10 @@ void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp
     auto y1 = interpret_as<uint32_t>(yh(box) * scale);
     std::array<uint32_t, 10> xy{x0, y0, x1, y0, x1, y1, x0, y1, x0, y0};
     write<record_type::XY>(stream, xy.size(), xy.begin(), xy.end());
+    if (prop_ptr) {
+        write_int<record_type::PROPATTR>(logger, stream, PROP_INST_NAME);
+        write_name<record_type::PROPVALUE>(logger, stream, *prop_ptr);
+    }
     write_element_end(logger, stream);
 }
 

@@ -98,7 +98,7 @@ void write_path(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpur
                 offset_t width, offset_t begin_extn, offset_t end_extn, const std::vector<point_t> &pt_vec, int scale);
 
 void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-               const box_t &box, int scale);
+               const box_t &box, int scale, const std::string *prop_ptr = nullptr);
 
 void write_instance(spdlog::logger &logger, std::ostream &stream, const std::string &cell_name,
                     const std::string &inst_name, const transformation &xform, int scale,

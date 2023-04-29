@@ -181,7 +181,7 @@ void write_lay_via(spdlog::logger &logger, std::ostream &stream, const layout::t
 }
 
 void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpurp_t purp, gpurp_t purp_l,
-                   const layout::pin &pin, bool make_pin_obj, double resolution, int scale) {
+                   const layout::pin &pin, bool make_pin_obj, double resolution, int scale, int pin_idx) {
     auto box = pin.bbox();
     if (!is_physical(box)) {
         logger.warn("non-physical bbox {} on pin layer ({}, {}), skipping.", to_string(box), lay,
@@ -202,7 +202,10 @@ void write_lay_pin(spdlog::logger &logger, std::ostream &stream, glay_t lay, gpu
 
     write_text(logger, stream, lay, purp_l, pin.label(), xform, text_h, resolution, scale);
     if (make_pin_obj) {
-        write_box(logger, stream, lay, purp, box, scale);
+        // Write pin attribute corresponding to pinAttNum = 1 during gds import / export in Virtuoso.
+        // This preserves pins as "Pin" objects.
+        auto pin_prop_str = std::string("TBLR P__" + std::to_string(pin_idx) + " " + pin.label() + " inputOutput");
+        write_box(logger, stream, lay, purp, box, scale, &pin_prop_str);
     }
 }
 
@@ -285,6 +288,7 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
     auto purp = tech_ptr->get_pin_purpose();
     auto purp_l = tech_ptr->get_label_purpose();
     auto make_pin_obj = tech_ptr->get_make_pin();
+    int pin_idx = 0;
     for (auto iter = cv.begin_pin(); iter != cv.end_pin(); ++iter) {
         logger.info("Writing layout pins.");
         auto & [ lay, pin_list ] = *iter;
@@ -300,7 +304,8 @@ void write_lay_cellview(spdlog::logger &logger, std::ostream &stream, const std:
             auto[glay, gpurp] = *gkey;
             auto[glay_l, gpurp_l] = *gkey_l;
             for (const auto &pin : pin_list) {
-                write_lay_pin(logger, stream, glay, gpurp, gpurp_l, pin, make_pin_obj, resolution, scale);
+                write_lay_pin(logger, stream, glay, gpurp, gpurp_l, pin, make_pin_obj, resolution, scale, pin_idx);
+                ++pin_idx;
             }
         }
     }
