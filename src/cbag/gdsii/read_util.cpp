@@ -305,7 +305,22 @@ std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_
     for (decltype(num) idx = 0; idx < num; ++idx) {
         pt_vec.emplace_back(read_point(stream, scale));
     }
-    read_ele_end(logger, stream);
+
+    // if properties exist, read those, but path object doesn't store those for now
+    auto[rtype, rsize] = read_record_header(stream);
+    switch (rtype) {
+    case record_type::ENDEL:
+        break;
+    case record_type::PROPATTR: {
+        read_bytes<uint16_t>(stream);
+        read_name<record_type::PROPVALUE>(logger, stream);
+        read_ele_end(logger, stream);
+        break;
+    }
+    default:
+        throw std::runtime_error(
+            fmt::format("Unexpected gds record type {} at end of path.", to_string(rtype)));
+    }
 
     return {gds_layer_t{glay, gpurp}, width, path_type, begin_extn, end_extn, pt_vec};
 }
