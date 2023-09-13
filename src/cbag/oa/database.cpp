@@ -256,7 +256,7 @@ void database::implement_lay_list(const std::string &lib_name, const std::string
 } // namespace cbagoa
 
 void database::write_tech_info_file(const std::string &fname, const std::string &tech_lib,
-                                    const std::string &pin_purpose) const {
+                                    const std::string &pin_purpose, const std::string &label_purpose) const {
     oa::oaTech *tech_ptr = read_tech(ns_native, tech_lib);
 
     // read layer/purpose/via mappings
@@ -301,6 +301,7 @@ void database::write_tech_info_file(const std::string &fname, const std::string 
     out << YAML::BeginMap;
     out << YAML::Key << "default_purpose" << YAML::Value << "drawing";
     out << YAML::Key << "pin_purpose" << YAML::Value << pin_purpose;
+    out << YAML::Key << "label_purpose" << YAML::Value << label_purpose;
     out << YAML::Key << "make_pin_obj" << YAML::Value << true;
     out << YAML::EndMap;
 

@@ -88,6 +88,8 @@ enum class record_type : uint16_t {
     PROPVALUE = 0x2C06,
     BOX = 0x2D00,
     BOXTYPE = 0x2E02,
+    BEGINEXTN = 0x3003,
+    ENDEXTN = 0x3103,
 };
 
 constexpr auto PROP_INST_NAME = 1;

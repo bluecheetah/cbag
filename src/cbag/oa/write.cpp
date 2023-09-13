@@ -720,7 +720,7 @@ void create_lay_inst(const oa::oaCdbaNS &ns, oa::oaBlock *blk, const std::string
         // convert BAG array parameters to OA array parameters
         auto[oa_nx, oa_ny, oa_spx, oa_spy] =
             cbag::convert_array(inst.xform, inst.nx, inst.ny, inst.spx, inst.spy);
-        oa::oaArrayInst::create(blk, lib_oa, cell_oa, view_oa, inst_name, xform, oa_spx, oa_spy,
+        oa::oaArrayInst::create(blk, lib_oa, cell_oa, view_oa, inst_name, xform, oa_spx * scale, oa_spy * scale,
                                 oa_ny, oa_nx, params_ptr);
     } else {
         oa::oaScalarInst::create(blk, lib_oa, cell_oa, view_oa, inst_name, xform, params_ptr);
@@ -782,7 +782,7 @@ void create_lay_via(spdlog::logger &logger, oa::oaBlock *blk, oa::oaTech *tech,
 }
 
 void create_lay_pin(spdlog::logger &logger, const oa::oaCdbaNS &ns, oa::oaBlock *blk,
-                    cbag::lay_t lay, cbag::purp_t purp, oa::oaByte color, bool use_color,
+                    cbag::lay_t lay, cbag::purp_t purp, cbag::purp_t purp_l, oa::oaByte color, bool use_color,
                     const cbag::layout::pin &pin, bool make_pin_obj,
                     oa::oaIntAppDef<oa::oaShape> *color_def_ptr, int scale) {
     auto box = pin.bbox();
@@ -800,7 +800,7 @@ void create_lay_pin(spdlog::logger &logger, const oa::oaCdbaNS &ns, oa::oaBlock 
         text_h = w;
     }
 
-    oa::oaText::create(blk, lay, purp, pin.label().c_str(), center, oa::oacCenterCenterTextAlign,
+    oa::oaText::create(blk, lay, purp_l, pin.label().c_str(), center, oa::oacCenterCenterTextAlign,
                        orient, oa::oacRomanFont, text_h);
     if (make_pin_obj) {
         auto r = oa::oaRect::create(
@@ -919,6 +919,7 @@ void write_lay_cellview(const oa::oaNativeNS &ns_native, const oa::oaCdbaNS &ns,
 
     logger.info("Export layout pins.");
     auto purp = cv_tech_ptr->get_pin_purpose();
+    auto purp_l = cv_tech_ptr->get_label_purpose();
     auto make_pin_obj = cv_tech_ptr->get_make_pin();
     auto color_def_ptr = get_color_def_ptr();
     for (auto iter = cv.begin_pin(); iter != cv.end_pin(); ++iter) {
@@ -926,7 +927,7 @@ void write_lay_cellview(const oa::oaNativeNS &ns_native, const oa::oaCdbaNS &ns,
         auto[lay_id, color, use_color] = get_layer_color(color_map, lay);
         use_color = use_color && color_def_ptr;
         for (auto const &pin : pin_list) {
-            create_lay_pin(logger, ns, blk, lay_id, purp, color, use_color, pin, make_pin_obj,
+            create_lay_pin(logger, ns, blk, lay_id, purp, purp_l, color, use_color, pin, make_pin_obj,
                            color_def_ptr, scale);
         }
     }

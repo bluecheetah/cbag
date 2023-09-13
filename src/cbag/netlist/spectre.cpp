@@ -120,7 +120,16 @@ std::unordered_map<std::string, std::string> new_cell_name_map() {
     cell_map["idc"] = "isource";
     cell_map["ind"] = "inductor";
     cell_map["ipulse"] = "isource";
+    cell_map["ipwlf"] = "isource";
     cell_map["isin"] = "isource";
+    cell_map["mind"] = "mutual_inductor";
+    cell_map["n1port"] = "nport";
+    cell_map["n2port"] = "nport";
+    cell_map["n3port"] = "nport";
+    cell_map["n4port"] = "nport";
+    cell_map["n6port"] = "nport";
+    cell_map["n8port"] = "nport";
+    cell_map["n12port"] = "nport";
     cell_map["res"] = "resistor";
     cell_map["switch"] = "relay";
     cell_map["vdc"] = "vsource";
@@ -135,6 +144,7 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     auto prop_map = std::unordered_map<std::string, std::string>();
     prop_map["acm"] = "mag";
     prop_map["acp"] = "phase";
+    prop_map["dataFile"] = "file";
     prop_map["egain"] = "gain";
     prop_map["fgain"] = "gain";
     prop_map["fileName"] = "file";
@@ -143,7 +153,9 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     prop_map["i1"] = "val0";
     prop_map["i2"] = "val1";
     prop_map["ia"] = "ampl";
+    prop_map["io"] = "sinedc";
     prop_map["idc"] = "dc";
+    prop_map["k"] = "coupling";
     prop_map["maxm"] = "max";
     prop_map["minm"] = "min";
     prop_map["pacm"] = "pacmag";
@@ -159,6 +171,7 @@ std::unordered_map<std::string, std::string> new_prop_name_map() {
     prop_map["v1"] = "val0";
     prop_map["v2"] = "val1";
     prop_map["va"] = "ampl";
+    prop_map["vo"] = "sinedc";
     prop_map["vdc"] = "dc";
     prop_map["vref"] = "probe";
     prop_map["xfm"] = "xfmag";
@@ -268,9 +281,14 @@ void traits::nstream<spectre_stream>::write_unit_instance(
         spirit::util::get_name_bits(net_ast_list[inst_idx],
                                     b.get_bit_inserter(prefix, net_map_ptr, tag));
     }
-    // write instance cell name
+
+    // write instance cell name and properties
     spectre::write_instance_cell_name(b.get_back_inserter(), params, info, stream);
     b.to_file(stream, spirit::namespace_cdba{});
+
+    // include veriloga file if it exists
+    if (info.va != "")
+        stream << "ahdl_include \"" << info.va << "\"\n";
 }
 
 void traits::nstream<spectre_stream>::append_netlist(type &stream, const std::string &netlist) {

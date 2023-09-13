@@ -137,7 +137,7 @@ class database {
                             const std::vector<lay_cv_info> &cv_list) const;
 
     void write_tech_info_file(const std::string &fname, const std::string &tech_lib,
-                              const std::string &pin_purpose) const;
+                              const std::string &pin_purpose, const std::string &label_purpose) const;
 };
 
 } // namespace cbagoa

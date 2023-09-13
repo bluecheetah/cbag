@@ -75,6 +75,8 @@ layer_t get_test_lay_purp(const tech &t, level_t level);
 layer_t get_layer_t(const tech &t, const track_coloring &tr_colors, level_t level, htr_t htr,
                     bool is_dummy = false);
 
+const std::string &get_label_purpose_name(const tech &t);
+
 const std::string &get_pin_purpose_name(const tech &t);
 
 const std::string &get_default_purpose_name(const tech &t);

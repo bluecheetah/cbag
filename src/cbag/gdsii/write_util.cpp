@@ -164,17 +164,30 @@ void write_int(spdlog::logger &logger, std::ostream &stream, uint16_t val) {
     write<R>(stream, tmp.size(), tmp.begin(), tmp.end());
 }
 
+template <record_type R>
+void write_int32(spdlog::logger &logger, std::ostream &stream, uint32_t val) {
+    std::array<uint32_t, 1> tmp{val};
+    write<R>(stream, tmp.size(), tmp.begin(), tmp.end());
+}
+
 template <typename iT>
 void write_points(spdlog::logger &logger, std::ostream &stream, std::size_t num_pts, iT begin,
-                  iT end, int scale) {
+                  iT end, int scale, bool is_path = false) {
     auto start_iter = point_xy_iter(begin, scale);
     auto xval = start_iter.x();
     auto yval = start_iter.y();
-    write<record_type::XY>(stream, 2 * (num_pts + 1), std::move(start_iter),
+    auto num_pts_write = 2 * num_pts;
+    if (!is_path) {
+        // for polygon, first point has to be rewritten
+        num_pts_write += 2;
+    }
+    write<record_type::XY>(stream, num_pts_write, std::move(start_iter),
                            point_xy_iter(end, scale));
-    // write first point
-    write_bytes(stream, xval);
-    write_bytes(stream, yval);
+    if (!is_path) {
+        // write first point
+        write_bytes(stream, xval);
+        write_bytes(stream, yval);
+    }
 }
 
 std::tuple<uint32_t, uint16_t> get_angle_flag(orientation orient) {
@@ -294,8 +307,25 @@ void write_polygon(spdlog::logger &logger, std::ostream &stream, glay_t layer, g
     write_element_end(logger, stream);
 }
 
+void write_path(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose, enum_t path_type,
+                offset_t width, offset_t begin_extn, offset_t end_extn, const std::vector<point_t> &pt_vec, int scale) {
+    write_empty<record_type::PATH>(logger, stream);
+    write_int<record_type::LAYER>(logger, stream, layer);
+    write_int<record_type::DATATYPE>(logger, stream, purpose);
+    if (path_type != 0) {
+        write_int<record_type::PATHTYPE>(logger, stream, path_type);
+    }
+    write_int32<record_type::WIDTH>(logger, stream, interpret_as<uint32_t>(width * scale));
+    if (path_type != 0) {
+        write_int32<record_type::BEGINEXTN>(logger, stream, interpret_as<uint32_t>(begin_extn * scale));
+        write_int32<record_type::ENDEXTN>(logger, stream, interpret_as<uint32_t>(end_extn * scale));
+    }
+    write_points(logger, stream, pt_vec.size(), pt_vec.begin(), pt_vec.end(), scale, true);
+    write_element_end(logger, stream);
+}
+
 void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp_t purpose,
-               const box_t &box, int scale) {
+               const box_t &box, int scale, const std::string *prop_ptr) {
     write_empty<record_type::BOUNDARY>(logger, stream);
     write_int<record_type::LAYER>(logger, stream, layer);
     write_int<record_type::DATATYPE>(logger, stream, purpose);
@@ -306,6 +336,10 @@ void write_box(spdlog::logger &logger, std::ostream &stream, glay_t layer, gpurp
     auto y1 = interpret_as<uint32_t>(yh(box) * scale);
     std::array<uint32_t, 10> xy{x0, y0, x1, y0, x1, y1, x0, y1, x0, y0};
     write<record_type::XY>(stream, xy.size(), xy.begin(), xy.end());
+    if (prop_ptr) {
+        write_int<record_type::PROPATTR>(logger, stream, PROP_INST_NAME);
+        write_name<record_type::PROPVALUE>(logger, stream, *prop_ptr);
+    }
     write_element_end(logger, stream);
 }
 

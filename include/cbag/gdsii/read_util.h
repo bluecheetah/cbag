@@ -56,6 +56,7 @@ limitations under the License.
 #include <cbag/common/layer_t.h>
 #include <cbag/common/point_t.h>
 #include <cbag/common/transformation.h>
+#include <cbag/common/typedefs.h>
 #include <cbag/gdsii/record_type.h>
 #include <cbag/gdsii/typedefs.h>
 #include <cbag/layout/polygons.h>
@@ -124,7 +125,7 @@ void read_skip(std::istream &stream) {
 
 std::tuple<record_type, std::size_t> read_record_header(std::istream &stream);
 
-point_t read_point(std::istream &stream);
+point_t read_point(std::istream &stream, int scale);
 
 std::string read_inst_name(spdlog::logger &logger, std::istream &stream, std::size_t &cnt);
 
@@ -138,7 +139,7 @@ void read_units(spdlog::logger &logger, std::istream &stream);
 
 std::string read_struct_name(spdlog::logger &logger, std::istream &stream);
 
-transformation read_transform(spdlog::logger &logger, std::istream &stream);
+transformation read_transform(spdlog::logger &logger, std::istream &stream, int scale);
 
 std::tuple<transformation, double> read_transform_info(spdlog::logger &logger,
                                                        std::istream &stream);
@@ -146,21 +147,24 @@ std::tuple<transformation, double> read_transform_info(spdlog::logger &logger,
 std::tuple<uint16_t, uint16_t> read_col_row(spdlog::logger &logger, std::istream &stream);
 
 std::tuple<gds_layer_t, transformation, std::string, double> read_text(spdlog::logger &logger,
-                                                                       std::istream &stream);
+                                                                       std::istream &stream,
+                                                                       double resolution, int scale);
 
-std::tuple<gds_layer_t, layout::poly_t> read_box(spdlog::logger &logger, std::istream &stream);
+std::tuple<gds_layer_t, layout::poly_t> read_box(spdlog::logger &logger, std::istream &stream, int scale);
 
-std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger, std::istream &stream);
+std::tuple<gds_layer_t, layout::poly_t> read_boundary(spdlog::logger &logger, std::istream &stream, int scale);
 
-gds_layer_t read_path(spdlog::logger &logger, std::istream &stream);
+std::tuple<gds_layer_t, offset_t, enum_t, offset_t, offset_t, std::vector<point_t>> read_path(spdlog::logger &logger,
+                                                                                              std::istream &stream,
+                                                                                              int scale);
 
 layout::instance read_instance(
     spdlog::logger &logger, std::istream &stream, std::size_t &cnt,
-    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map);
+    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map, int scale);
 
 layout::instance read_arr_instance(
     spdlog::logger &logger, std::istream &stream, std::size_t &cnt,
-    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map);
+    const std::unordered_map<std::string, std::shared_ptr<const layout::cellview>> &master_map, int scale);
 
 bool print_record(std::istream &stream);
 

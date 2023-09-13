@@ -133,6 +133,7 @@ set(SRC_FILES_LIB_CBAG
   ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/label.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/len_info.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/lp_lookup.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/path.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/path_util.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/pin.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/cbag/layout/routing_grid.cpp
@@ -264,6 +265,3 @@ endif()
 
 # add utility binaries
 add_subdirectory(util EXCLUDE_FROM_ALL)
-
-# add tests binaries
-add_subdirectory(tests EXCLUDE_FROM_ALL)

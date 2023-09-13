@@ -80,15 +80,13 @@ void process_layer_map(const std::string &fname, const layout::tech &tech, F fun
                 auto glay = to_int(iter.get_next(), fname, count);
                 check_has_next(iter, fname, count);
                 auto gpurp = to_int(iter.get_next(), fname, count);
-                if (!iter.has_next()) {
-                    // if we still have values left, that means they are
-                    // color specifications.  Ignore those entries since
-                    // we use MnCA/MnCB layers to denote colors.
-                    auto lay = tech.get_layer_id(val1);
-                    auto purp = tech.get_purpose_id(val2);
-                    if (lay && purp) {
-                        fun(std::make_pair(*lay, *purp), std::make_pair(glay, gpurp));
-                    }
+                // if we still have values left, that means they are
+                // color specifications.  Ignore those entries since
+                // we use MnCA/MnCB layers to denote colors.
+                auto lay = tech.get_layer_id(val1);
+                auto purp = tech.get_purpose_id(val2);
+                if (lay && purp) {
+                    fun(std::make_pair(*lay, *purp), std::make_pair(glay, gpurp));
                 }
             }
         }

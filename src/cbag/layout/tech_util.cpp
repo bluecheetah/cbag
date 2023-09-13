@@ -106,7 +106,11 @@ lp_lookup make_lp_lookup(const YAML::Node &node) {
     auto purp_map = node["purpose"].as<purp_map_t>();
     auto def_purp = node["default_purpose"].as<std::string>();
     auto pin_purp = node["pin_purpose"].as<std::string>();
-    return {node["layer"].as<lay_map_t>(), node["purpose"].as<purp_map_t>(), def_purp, pin_purp};
+    auto label_purp = pin_purp;
+    if (YAML::Node label_purpose = node["label_purpose"]) {
+        label_purp = label_purpose.as<std::string>();
+    }
+    return {node["layer"].as<lay_map_t>(), node["purpose"].as<purp_map_t>(), def_purp, pin_purp, label_purp};
 }
 
 void _add_flipped_enclosures(vinfo_map_t &info_map, const std::string &name) {
@@ -387,6 +391,10 @@ layer_t get_layer_t(const tech &t, const track_coloring &tr_colors, level_t leve
                     bool is_dummy) {
     auto idx = tr_colors.get_htr_parity(level, htr);
     return t.get_lay_purp_list(level, is_dummy)[idx];
+}
+
+const std::string &get_label_purpose_name(const tech &t) {
+    return t.get_purpose_name(t.get_label_purpose());
 }
 
 const std::string &get_pin_purpose_name(const tech &t) {

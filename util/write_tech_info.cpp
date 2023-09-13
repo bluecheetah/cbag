@@ -49,14 +49,14 @@ limitations under the License.
 #include <cbag/oa/database.h>
 
 void write_tech_info_file(const char *fname, const char *tech_lib, const char *lib_file = nullptr,
-                          const char *pin_purpose = "pin") {
+                          const char *pin_purpose = "pin", const char *label_purpose = "pin") {
     std::string lib_str("cds.lib");
     if (lib_file != nullptr) {
         lib_str = lib_file;
     }
 
     cbagoa::database db(lib_str);
-    db.write_tech_info_file(fname, tech_lib, pin_purpose);
+    db.write_tech_info_file(fname, tech_lib, pin_purpose, label_purpose);
 }
 
 int main(int argc, char *argv[]) {
@@ -70,8 +70,11 @@ int main(int argc, char *argv[]) {
     case 5:
         write_tech_info_file(argv[1], argv[2], argv[3], argv[4]);
         break;
+    case 6:
+        write_tech_info_file(argv[1], argv[2], argv[3], argv[4], argv[5]);
+        break;
     default:
-        std::cout << "Usage: write_tech_info <fname> <tech_lib> [<cds_lib_fname> [<pin_purpose>]]"
+        std::cout << "Usage: write_tech_info <fname> <tech_lib> [<cds_lib_fname> [<pin_purpose> [<label_purpose>]]]"
                   << std::endl;
     }
 

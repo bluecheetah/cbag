@@ -56,7 +56,7 @@ namespace layout {
 lp_lookup::lp_lookup() = default;
 
 lp_lookup::lp_lookup(lay_map_t &&lay_map, purp_map_t &&purp_map, const std::string &def_purp,
-                     const std::string &pin_purp)
+                     const std::string &pin_purp, const std::string &label_purp)
     : lay_map_(std::move(lay_map)), purp_map_(std::move(purp_map)) {
     auto purp_iter = purp_map_.find(def_purp);
     if (purp_iter == purp_map_.end()) {
@@ -70,11 +70,19 @@ lp_lookup::lp_lookup(lay_map_t &&lay_map, purp_map_t &&purp_map, const std::stri
     } else {
         pin_purpose_ = purp_iter->second;
     }
+    purp_iter = purp_map_.find(label_purp);
+    if (purp_iter == purp_map_.end()) {
+        throw std::out_of_range(fmt::format("Cannot find label purpose: {}", label_purp));
+    } else {
+        label_purpose_ = purp_iter->second;
+    }
 }
 
 purp_t lp_lookup::get_default_purpose() const { return default_purpose_; }
 
 purp_t lp_lookup::get_pin_purpose() const { return pin_purpose_; }
+
+purp_t lp_lookup::get_label_purpose() const { return label_purpose_; }
 
 const std::string &lp_lookup::get_layer_name(lay_t lay_id) const {
     auto iter = std::find_if(
